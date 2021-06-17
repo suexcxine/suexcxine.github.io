@@ -302,90 +302,6 @@
 
 
   
-    <article id="post-linux_storage" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/09/06/linux_storage/">linux storage</a>
-    </h1>
-  
-
-        
-        <a href="/2015/09/06/linux_storage/" class="archive-article-date">
-  	<time datetime="2015-09-05T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2015-09-06</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="关于磁盘第一个分割区前面预留的1MiB空间"><a href="#关于磁盘第一个分割区前面预留的1MiB空间" class="headerlink" title="关于磁盘第一个分割区前面预留的1MiB空间"></a>关于磁盘第一个分割区前面预留的1MiB空间</h2><ol>
-<li><p>以前的硬盘分割MBR常常说MBR是512bytes,这是早期的规格,就是指第1個分割区前面的空白是512 bytes = 1 sector<br>现在Ubuntu预设,第1個分割区前面的空白是1048576 bytes = 1 MiB = 2048 sectors = 0 ~ 2047 sector<br>所以gparted第一個分割区前面预留1 MiB空白空间<br>fdisk 指令<br>parted 指令<br>gdisk 指令<br>....<br>第一个分区都是从第2048个sector开始</p>
-</li>
-<li><p>这1 MiB的用途<br>除了前面512 bytes还是存放MBR信息以外 (0~445放开机引导信息446~511放分区信息)<br>后面还有2047个512 sectors留给其它程序使用,例如RAID LVM等等</p>
-</li>
-</ol>
-<h2 id="检查某分区的block-size"><a href="#检查某分区的block-size" class="headerlink" title="检查某分区的block size"></a>检查某分区的block size</h2><p>sudo blockdev --getbsz /dev/sda1</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-<div class="article-tag tagcloud">
-	<i class="icon-price-tags icon"></i>
-	<ul class="article-tag-list">
-		
-		
-		<li class="article-tag-list-item">
-			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">
-				linux</a>
-		</li>
-		
-		
-	</ul>
-</div>
-
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2015/09/06/linux_storage/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
     <article id="post-linux_tips" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -466,19 +382,19 @@
 
 
   
-    <article id="post-regular_expression" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-linux_storage" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2015/09/06/regular_expression/">正则表达式</a>
+      <a class="article-title" href="/2015/09/06/linux_storage/">linux storage</a>
     </h1>
   
 
         
-        <a href="/2015/09/06/regular_expression/" class="archive-article-date">
+        <a href="/2015/09/06/linux_storage/" class="archive-article-date">
   	<time datetime="2015-09-05T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2015-09-06</time>
 </a>
         
@@ -486,14 +402,13 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="关于-A-Z-的ASCII顺序和字典顺序的问题"><a href="#关于-A-Z-的ASCII顺序和字典顺序的问题" class="headerlink" title="关于[A-Z]的ASCII顺序和字典顺序的问题"></a>关于[A-Z]的ASCII顺序和字典顺序的问题</h2><p>[A-Z]这种正则表达式可能被解释为<a href="ASCII顺序">ABCDEFGHIJKLMNOPQRSTUVWXYZ</a>,<br>也可能被解释为<a href="字典顺序">AbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ</a></p>
-<p>例如, shell:<br>$ ls /usr/sbin/[A-Z]*<br>/usr/sbin/bccmd     /usr/sbin/fdformat    /usr/sbin/lpinfo    /usr/sbin/readprofile    /usr/sbin/update-dictcommon-hunspell</p>
-<p>$ ls /usr/sbin/[[:upper:]]*<br>/usr/sbin/ModemManager  /usr/sbin/NetworkManager</p>
-<p>而, erlang:</p>
-<blockquote>
-<p>filelib:wildcard(&quot;/usr/sbin/[A-Z]*&quot;).<br>[&quot;/usr/sbin/ModemManager&quot;,&quot;/usr/sbin/NetworkManager&quot;]</p>
-</blockquote>
-<p>貌似只有shell有这个问题</p>
+        <h2 id="关于磁盘第一个分割区前面预留的1MiB空间"><a href="#关于磁盘第一个分割区前面预留的1MiB空间" class="headerlink" title="关于磁盘第一个分割区前面预留的1MiB空间"></a>关于磁盘第一个分割区前面预留的1MiB空间</h2><ol>
+<li><p>以前的硬盘分割MBR常常说MBR是512bytes,这是早期的规格,就是指第1個分割区前面的空白是512 bytes = 1 sector<br>现在Ubuntu预设,第1個分割区前面的空白是1048576 bytes = 1 MiB = 2048 sectors = 0 ~ 2047 sector<br>所以gparted第一個分割区前面预留1 MiB空白空间<br>fdisk 指令<br>parted 指令<br>gdisk 指令<br>....<br>第一个分区都是从第2048个sector开始</p>
+</li>
+<li><p>这1 MiB的用途<br>除了前面512 bytes还是存放MBR信息以外 (0~445放开机引导信息446~511放分区信息)<br>后面还有2047个512 sectors留给其它程序使用,例如RAID LVM等等</p>
+</li>
+</ol>
+<h2 id="检查某分区的block-size"><a href="#检查某分区的block-size" class="headerlink" title="检查某分区的block size"></a>检查某分区的block size</h2><p>sudo blockdev --getbsz /dev/sda1</p>
 
       
 
@@ -521,7 +436,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2015/09/06/regular_expression/">展开全文 >></a>
+          <a class="article-more-a" href="/2015/09/06/linux_storage/">展开全文 >></a>
         </p>
       
 
@@ -680,6 +595,91 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2015/09/06/rsync/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-regular_expression" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/09/06/regular_expression/">正则表达式</a>
+    </h1>
+  
+
+        
+        <a href="/2015/09/06/regular_expression/" class="archive-article-date">
+  	<time datetime="2015-09-05T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2015-09-06</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="关于-A-Z-的ASCII顺序和字典顺序的问题"><a href="#关于-A-Z-的ASCII顺序和字典顺序的问题" class="headerlink" title="关于[A-Z]的ASCII顺序和字典顺序的问题"></a>关于[A-Z]的ASCII顺序和字典顺序的问题</h2><p>[A-Z]这种正则表达式可能被解释为<a href="ASCII顺序">ABCDEFGHIJKLMNOPQRSTUVWXYZ</a>,<br>也可能被解释为<a href="字典顺序">AbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ</a></p>
+<p>例如, shell:<br>$ ls /usr/sbin/[A-Z]*<br>/usr/sbin/bccmd     /usr/sbin/fdformat    /usr/sbin/lpinfo    /usr/sbin/readprofile    /usr/sbin/update-dictcommon-hunspell</p>
+<p>$ ls /usr/sbin/[[:upper:]]*<br>/usr/sbin/ModemManager  /usr/sbin/NetworkManager</p>
+<p>而, erlang:</p>
+<blockquote>
+<p>filelib:wildcard(&quot;/usr/sbin/[A-Z]*&quot;).<br>[&quot;/usr/sbin/ModemManager&quot;,&quot;/usr/sbin/NetworkManager&quot;]</p>
+</blockquote>
+<p>貌似只有shell有这个问题</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+<div class="article-tag tagcloud">
+	<i class="icon-price-tags icon"></i>
+	<ul class="article-tag-list">
+		
+		
+		<li class="article-tag-list-item">
+			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">
+				linux</a>
+		</li>
+		
+		
+	</ul>
+</div>
+
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2015/09/06/regular_expression/">展开全文 >></a>
         </p>
       
 
@@ -1057,11 +1057,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">cs</a>
+                <a href="javascript:void(0)" class="js-tag color1">linux</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">linux</a>
+                <a href="javascript:void(0)" class="js-tag color3">cs</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1073,15 +1073,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">test</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">haskell</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">gui</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">test</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1097,6 +1097,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">encoding</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">aws</a>
               </li>
              
@@ -1109,15 +1113,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">encoding</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">web</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">algorithm</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1126,6 +1122,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">game</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">algorithm</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">design</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1145,10 +1149,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">design</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">docker</a>
               </li>
              
@@ -1161,11 +1161,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">ets</a>
+                <a href="javascript:void(0)" class="js-tag color1">float</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">float</a>
+                <a href="javascript:void(0)" class="js-tag color4">ets</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1213,15 +1213,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">programming</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">c</a>
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">programming</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">versioncontrol</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">go</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1233,19 +1237,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">go</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">hexo</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">os</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">monitoring</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1253,11 +1245,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">json</a>
+                <a href="javascript:void(0)" class="js-tag color1">monitoring</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">os</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">root</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">json</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">log</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1266,10 +1270,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">terminal</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">log</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1317,6 +1317,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">windows</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">node</a>
               </li>
              
@@ -1325,11 +1329,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">windows</a>
+                <a href="javascript:void(0)" class="js-tag color2">python</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">python</a>
+                <a href="javascript:void(0)" class="js-tag color4">keyboard</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1338,10 +1342,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">rbenv</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">keyboard</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1357,6 +1357,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">wifi</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">socket</a>
               </li>
              
@@ -1365,11 +1369,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">charsets</a>
+                <a href="javascript:void(0)" class="js-tag color4">ftp</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">ftp</a>
+                <a href="javascript:void(0)" class="js-tag color4">charsets</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1378,10 +1382,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">xcode</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">wifi</a>
               </li>
             
             <div class="clearfix"></div>
