@@ -146,19 +146,19 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-regular_expression" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-rlwrap" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2015/09/06/regular_expression/">正则表达式</a>
+      <a class="article-title" href="/2015/09/06/rlwrap/">rlwrap</a>
     </h1>
   
 
         
-        <a href="/2015/09/06/regular_expression/" class="archive-article-date">
+        <a href="/2015/09/06/rlwrap/" class="archive-article-date">
   	<time datetime="2015-09-05T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2015-09-06</time>
 </a>
         
@@ -166,14 +166,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="关于-A-Z-的ASCII顺序和字典顺序的问题"><a href="#关于-A-Z-的ASCII顺序和字典顺序的问题" class="headerlink" title="关于[A-Z]的ASCII顺序和字典顺序的问题"></a>关于[A-Z]的ASCII顺序和字典顺序的问题</h2><p>[A-Z]这种正则表达式可能被解释为<a href="ASCII顺序">ABCDEFGHIJKLMNOPQRSTUVWXYZ</a>,<br>也可能被解释为<a href="字典顺序">AbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ</a></p>
-<p>例如, shell:<br>$ ls /usr/sbin/[A-Z]*<br>/usr/sbin/bccmd     /usr/sbin/fdformat    /usr/sbin/lpinfo    /usr/sbin/readprofile    /usr/sbin/update-dictcommon-hunspell</p>
-<p>$ ls /usr/sbin/[[:upper:]]*<br>/usr/sbin/ModemManager  /usr/sbin/NetworkManager</p>
-<p>而, erlang:</p>
-<blockquote>
-<p>filelib:wildcard(&quot;/usr/sbin/[A-Z]*&quot;).<br>[&quot;/usr/sbin/ModemManager&quot;,&quot;/usr/sbin/NetworkManager&quot;]</p>
-</blockquote>
-<p>貌似只有shell有这个问题</p>
+        <p>rlwrap is a wrapper that uses the GNU readline library to allow the editing of keyboard input for any other command.<br>Input history is kept between invocations, separately for each command; history completion and search work as in bash and completion word lists can be specified on the command line.</p>
 
       
 
@@ -201,7 +194,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2015/09/06/regular_expression/">展开全文 >></a>
+          <a class="article-more-a" href="/2015/09/06/rlwrap/">展开全文 >></a>
         </p>
       
 
@@ -722,6 +715,89 @@
 
 
   
+    <article id="post-fcitx" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/08/06/fcitx/">fcitx</a>
+    </h1>
+  
+
+        
+        <a href="/2015/08/06/fcitx/" class="archive-article-date">
+  	<time datetime="2015-08-05T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2015-08-06</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get <span class="keyword">install</span> fcitx</span><br><span class="line">sudo apt-<span class="keyword">get</span> <span class="keyword">install</span> fcitx-<span class="keyword">table</span>-all</span><br><span class="line">sudo apt-<span class="keyword">get</span> <span class="keyword">install</span> fcitx-mozc // 日语输入法</span><br></pre></td></tr></table></figure>
+<h2 id="设fcitx为默认"><a href="#设fcitx为默认" class="headerlink" title="设fcitx为默认"></a>设fcitx为默认</h2><figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-<span class="built_in">get</span> install im-<span class="built_in">config</span></span><br><span class="line">进入im-<span class="built_in">config</span>图形界面设置fcitx为默认输入法</span><br></pre></td></tr></table></figure>
+<h2 id="添加具体输入法"><a href="#添加具体输入法" class="headerlink" title="添加具体输入法"></a>添加具体输入法</h2><p>将系统设置里的keyboard里的shortcuts里的&quot;Switch to next source&quot;和&quot;Switch to previous source&quot;disable掉，鼠标点击后按Backspace键即可disable.<br>点击右上角任务栏里的键盘样图标，选择Configure Current Input Method，点击左下角的+号，清掉&quot;Only Show Current Language&quot;复选框后添加你想要的输入法</p>
+<p>Logout或Restart</p>
+<p>Ctrl+Space开启或关闭输入法， Ctrl+Shift切换输入法</p>
+<p>Enjoy!</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+<div class="article-tag tagcloud">
+	<i class="icon-price-tags icon"></i>
+	<ul class="article-tag-list">
+		
+		
+		<li class="article-tag-list-item">
+			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">
+				linux</a>
+		</li>
+		
+		
+	</ul>
+</div>
+
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2015/08/06/fcitx/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-firefox" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -779,89 +855,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2015/08/06/firefox/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-fcitx" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/08/06/fcitx/">fcitx</a>
-    </h1>
-  
-
-        
-        <a href="/2015/08/06/fcitx/" class="archive-article-date">
-  	<time datetime="2015-08-05T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2015-08-06</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get <span class="keyword">install</span> fcitx</span><br><span class="line">sudo apt-<span class="keyword">get</span> <span class="keyword">install</span> fcitx-<span class="keyword">table</span>-all</span><br><span class="line">sudo apt-<span class="keyword">get</span> <span class="keyword">install</span> fcitx-mozc // 日语输入法</span><br></pre></td></tr></table></figure>
-<h2 id="设fcitx为默认"><a href="#设fcitx为默认" class="headerlink" title="设fcitx为默认"></a>设fcitx为默认</h2><figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-<span class="built_in">get</span> install im-<span class="built_in">config</span></span><br><span class="line">进入im-<span class="built_in">config</span>图形界面设置fcitx为默认输入法</span><br></pre></td></tr></table></figure>
-<h2 id="添加具体输入法"><a href="#添加具体输入法" class="headerlink" title="添加具体输入法"></a>添加具体输入法</h2><p>将系统设置里的keyboard里的shortcuts里的&quot;Switch to next source&quot;和&quot;Switch to previous source&quot;disable掉，鼠标点击后按Backspace键即可disable.<br>点击右上角任务栏里的键盘样图标，选择Configure Current Input Method，点击左下角的+号，清掉&quot;Only Show Current Language&quot;复选框后添加你想要的输入法</p>
-<p>Logout或Restart</p>
-<p>Ctrl+Space开启或关闭输入法， Ctrl+Shift切换输入法</p>
-<p>Enjoy!</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-<div class="article-tag tagcloud">
-	<i class="icon-price-tags icon"></i>
-	<ul class="article-tag-list">
-		
-		
-		<li class="article-tag-list-item">
-			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">
-				linux</a>
-		</li>
-		
-		
-	</ul>
-</div>
-
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2015/08/06/fcitx/">展开全文 >></a>
         </p>
       
 
@@ -1078,23 +1071,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">internet</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">haskell</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">gui</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">internet</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">test</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">encoding</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1110,7 +1095,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">web</a>
+                <a href="javascript:void(0)" class="js-tag color4">encoding</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1130,19 +1115,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">web</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">algorithm</a>
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">test</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">game</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">design</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">erlang</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1154,11 +1139,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">erlang</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">dns</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">db</a>
+                <a href="javascript:void(0)" class="js-tag color2">design</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1170,11 +1159,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">db</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">elixir</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">config</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">ets</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1191,10 +1188,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">float</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">ets</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1250,10 +1243,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">versioncontrol</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">go</a>
               </li>
              
@@ -1266,11 +1255,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">hex</a>
+                <a href="javascript:void(0)" class="js-tag color5">versioncontrol</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">hexo</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">hex</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1286,11 +1279,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">json</a>
+                <a href="javascript:void(0)" class="js-tag color5">root</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">root</a>
+                <a href="javascript:void(0)" class="js-tag color5">json</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1338,15 +1331,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">env</a>
+                <a href="javascript:void(0)" class="js-tag color3">windows</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">proxy</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">windows</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1355,6 +1344,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">npm</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">env</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1378,19 +1371,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">ruby</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">rbenv</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">html</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">javascript</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">ruby</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">rbenv</a>
               </li>
              
               <li class="article-tag-list-item">

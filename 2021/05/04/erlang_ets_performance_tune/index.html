@@ -15,7 +15,7 @@
 <meta property="og:url" content="http://yoursite.com/2021/05/04/erlang_ets_performance_tune/index.html">
 <meta property="og:site_name" content="Wind">
 <meta property="og:description" content="假如 ets 里存的数据格式如下1&amp;#123;&amp;#123;user_id, type&amp;#125;, pid&amp;#125; ordered_set, keypos = 1 要用上 ordered_set 的前缀匹配高性能, match specification 需要像下面这样写1[&amp;#123;&amp;#123;&amp;#123;user_id, :_&amp;#125;, :&quot;$1&quot;&amp;#125;, [], [:&quot;$1&quot;">
-<meta property="og:updated_time" content="2021-06-13T16:04:41.414Z">
+<meta property="og:updated_time" content="2021-06-26T11:11:28.238Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="erlang ets性能优化">
 <meta name="twitter:description" content="假如 ets 里存的数据格式如下1&amp;#123;&amp;#123;user_id, type&amp;#125;, pid&amp;#125; ordered_set, keypos = 1 要用上 ordered_set 的前缀匹配高性能, match specification 需要像下面这样写1[&amp;#123;&amp;#123;&amp;#123;user_id, :_&amp;#125;, :&quot;$1&quot;&amp;#125;, [], [:&quot;$1&quot;">
@@ -176,7 +176,10 @@
 <p>这种写法将不会用到 ordered_set 的前缀匹配, 而是全表扫描, 是全表扫描!</p>
 <p>两者性能差异视表的规模而定, 这也是坑点之一,</p>
 <p>因为表小的时候看不出来, 等表大了以后又很难想到是这里的问题, 莫名奇妙 CPU 占用率就飙上去了</p>
-<p>笔者的某服务经此一步优化, CPU 占用率从 80% 降到了 20% !</p>
+<p>下面是一个大约 20 万元素的表的实际数据:</p>
+<figure class="highlight elixir"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&gt; <span class="symbol">:timer</span>.tc(<span class="keyword">fn</span> -&gt; <span class="symbol">:ets</span>.select(<span class="symbol">:simple_global</span>, [ &#123;&#123;&#123;<span class="symbol">:<span class="string">"$1"</span></span>, <span class="symbol">:agent</span>, <span class="symbol">:<span class="string">"$2"</span></span>&#125;, <span class="symbol">:_</span>, <span class="symbol">:_</span>, <span class="symbol">:_</span>, <span class="symbol">:_</span>&#125;, [&#123;<span class="symbol">:==</span>, <span class="symbol">:<span class="string">"$1"</span></span>, ent_id&#125;], [<span class="symbol">:<span class="string">"$2"</span></span>]&#125; ]) <span class="keyword">end</span>)</span><br><span class="line">&#123;<span class="number">12128</span>,</span><br><span class="line"> [<span class="number">9269</span>, <span class="number">44558</span>, <span class="number">1001458</span>, <span class="number">1068440</span>, <span class="number">1069147</span>, <span class="number">1092569</span>, <span class="number">1111688</span>, <span class="number">1114902</span>, <span class="number">1118485</span>,</span><br><span class="line">  <span class="number">1155156</span>, <span class="number">1161491</span>, <span class="number">1172293</span>, <span class="number">1183136</span>, <span class="number">1186487</span>, <span class="number">1228076</span>, <span class="number">1234522</span>, <span class="number">1268137</span>,</span><br><span class="line">  <span class="number">1273945</span>, <span class="number">1359669</span>, <span class="number">1488611</span>, <span class="number">1506535</span>, <span class="number">1513229</span>, <span class="number">1544955</span>, <span class="number">1555843</span>, <span class="number">1560291</span>]&#125;</span><br><span class="line">&gt; <span class="symbol">:timer</span>.tc(<span class="keyword">fn</span> -&gt; <span class="symbol">:ets</span>.select(<span class="symbol">:simple_global</span>, [&#123;&#123;&#123;ent_id, <span class="symbol">:agent</span>, <span class="symbol">:<span class="string">"$2"</span></span>&#125;, <span class="symbol">:_</span>, <span class="symbol">:_</span>, <span class="symbol">:_</span>, <span class="symbol">:_</span>&#125;, [], [<span class="symbol">:<span class="string">"$2"</span></span>]&#125;]) <span class="keyword">end</span>)</span><br><span class="line">&#123;<span class="number">25</span>,</span><br><span class="line"> [<span class="number">9269</span>, <span class="number">44558</span>, <span class="number">1001458</span>, <span class="number">1068440</span>, <span class="number">1069147</span>, <span class="number">1092569</span>, <span class="number">1111688</span>, <span class="number">1114902</span>, <span class="number">1118485</span>,</span><br><span class="line">  <span class="number">1155156</span>, <span class="number">1161491</span>, <span class="number">1172293</span>, <span class="number">1183136</span>, <span class="number">1186487</span>, <span class="number">1228076</span>, <span class="number">1234522</span>, <span class="number">1268137</span>,</span><br><span class="line">  <span class="number">1273945</span>, <span class="number">1359669</span>, <span class="number">1488611</span>, <span class="number">1506535</span>, <span class="number">1513229</span>, <span class="number">1544955</span>, <span class="number">1555843</span>, <span class="number">1560291</span>]&#125;</span><br></pre></td></tr></table></figure>
+<p>12128 微秒和 25 微秒的差距, 约 500 倍,</p>
+<p>笔者的某服务经此优化, CPU 占用率从 80% 降到了 20% !</p>
 
       
 
@@ -420,23 +423,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">internet</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">haskell</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">gui</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">internet</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">test</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">encoding</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -452,7 +447,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">web</a>
+                <a href="javascript:void(0)" class="js-tag color4">encoding</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -472,19 +467,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">web</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">algorithm</a>
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">test</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">game</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">design</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">erlang</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -496,11 +491,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">erlang</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">dns</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">db</a>
+                <a href="javascript:void(0)" class="js-tag color2">design</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -512,11 +511,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">db</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">elixir</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">config</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">ets</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -533,10 +540,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">float</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">ets</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -592,10 +595,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">versioncontrol</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">go</a>
               </li>
              
@@ -608,11 +607,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">hex</a>
+                <a href="javascript:void(0)" class="js-tag color5">versioncontrol</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">hexo</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">hex</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -628,11 +631,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">json</a>
+                <a href="javascript:void(0)" class="js-tag color5">root</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">root</a>
+                <a href="javascript:void(0)" class="js-tag color5">json</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -680,15 +683,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">env</a>
+                <a href="javascript:void(0)" class="js-tag color3">windows</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">proxy</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">windows</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -697,6 +696,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">npm</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">env</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -720,19 +723,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">ruby</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">rbenv</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">html</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">javascript</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">ruby</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">rbenv</a>
               </li>
              
               <li class="article-tag-list-item">
