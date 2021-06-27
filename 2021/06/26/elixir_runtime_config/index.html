@@ -15,7 +15,7 @@
 <meta property="og:url" content="http://yoursite.com/2021/06/26/elixir_runtime_config/index.html">
 <meta property="og:site_name" content="Wind">
 <meta property="og:description" content="有次在 config.exs 里给 kernel application 配了点东西, 结果出了下面这样的警告:">
-<meta property="og:updated_time" content="2021-06-26T06:58:33.027Z">
+<meta property="og:updated_time" content="2021-06-27T11:43:34.797Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="elixir runtime config">
 <meta name="twitter:description" content="有次在 config.exs 里给 kernel application 配了点东西, 结果出了下面这样的警告:">
@@ -173,8 +173,14 @@
 <p>结果出了下面这样的警告:</p>
 <a id="more"></a>
 <figure class="highlight elixir"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">Cannot configure base <span class="symbol">applications:</span> [<span class="symbol">:kernel</span>]</span><br><span class="line"></span><br><span class="line">These applications are already started by the time the configuration</span><br><span class="line">executes <span class="keyword">and</span> these configurations have no effect.</span><br><span class="line"></span><br><span class="line">If you want to configure these applications <span class="keyword">for</span> a release, you can</span><br><span class="line">specify them <span class="keyword">in</span> your vm.args <span class="symbol">file:</span></span><br><span class="line"></span><br><span class="line">	-kernel config_key config_value</span><br><span class="line"></span><br><span class="line">Alternatively, if you must configure them dynamically, you can wrap</span><br><span class="line">them <span class="keyword">in</span> a conditional block <span class="keyword">in</span> your config <span class="symbol">files:</span></span><br><span class="line"></span><br><span class="line">  if System.get_env(<span class="string">"RELEASE_MODE"</span>) <span class="keyword">do</span></span><br><span class="line">    config <span class="symbol">:kernel</span>, ...</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">and</span> <span class="keyword">then</span> configure your releases to reboot after <span class="symbol">configuration:</span></span><br><span class="line"></span><br><span class="line">  <span class="symbol">releases:</span> [</span><br><span class="line">    <span class="symbol">my_app:</span> [<span class="symbol">reboot_system_after_config:</span> <span class="keyword">true</span>]</span><br><span class="line">  ]</span><br><span class="line"></span><br><span class="line">This happened <span class="keyword">when</span> loading config/config.exs <span class="keyword">or</span></span><br><span class="line">one of its imports.</span><br></pre></td></tr></table></figure>
-<p>所以, 要么用 vm.args 来配, 要么用 runtime config</p>
-<p>所以什么是 elixir 的 <a href="https://hexdocs.pm/mix/Mix.Tasks.Release.html#module-runtime-configuration" target="_blank" rel="noopener">runtime config</a> ?</p>
+<p>由于 kernel, stdlib 这些启动得比 config 要早, 所以 config 没法对它们生效</p>
+<p>于是, 如果想在 config 里配它们的参数, 要么用 vm.args 来配, </p>
+<p>要么用 <a href="https://hexdocs.pm/mix/Mix.Tasks.Release.html#module-runtime-configuration" target="_blank" rel="noopener">runtime config</a> + reboot_system_after_config(在 mix.exs 里配) 才能搞, 就是加载完 config 然后再重启VM(在同一个操作系统进程内) 的方式</p>
+<p>也就是下面这种效果</p>
+<figure class="highlight erlang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&gt; bin/test_app start_iex</span><br><span class="line">Erlang/OTP <span class="number">23</span> [erts-<span class="number">11.2</span>] [source] [<span class="number">64</span>-bit] [smp:<span class="number">8</span>:<span class="number">8</span>] [ds:<span class="number">8</span>:<span class="number">8</span>:<span class="number">10</span>] [async-threads:<span class="number">1</span>] [hipe]</span><br><span class="line"></span><br><span class="line">Erlang/OTP <span class="number">23</span> [erts-<span class="number">11.2</span>] [source] [<span class="number">64</span>-bit] [smp:<span class="number">8</span>:<span class="number">8</span>] [ds:<span class="number">8</span>:<span class="number">8</span>:<span class="number">10</span>] [async-threads:<span class="number">1</span>] [hipe]</span><br><span class="line"></span><br><span class="line">...... other logs</span><br></pre></td></tr></table></figure>
+<p>要我选的话还是 vm.args 吧~</p>
+<h2 id="runtime-config"><a href="#runtime-config" class="headerlink" title="runtime config"></a>runtime config</h2><p>runtime config 的意义在于, 以前 config.exs(以及import_config加进来的其他东西)是一个编译时的东西, 即编译生成 sys.config 文件. 这样的话, 比如在 config.exs 里用了环境变量的话, 也要重新编译并发布才能生效, 失去环境变量的意义, 太麻烦. </p>
+<p>有了 runtime config 的话, 在启动过程中一个比较早的时间点会加载一次配置, 这样环境变量就是在运行时加载了, 另外手动修改配置文件(如 releases/VSN/runtime.exs)也可以生效, 这两种情况就都不需要重新编译和发布了. 太棒啦!</p>
 
       
 
@@ -413,11 +419,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">haskell</a>
+                <a href="javascript:void(0)" class="js-tag color4">encoding</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">gui</a>
+                <a href="javascript:void(0)" class="js-tag color5">test</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -433,10 +439,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">encoding</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">aws</a>
               </li>
              
@@ -449,7 +451,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">computer</a>
+                <a href="javascript:void(0)" class="js-tag color3">haskell</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">gui</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -461,11 +467,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">test</a>
+                <a href="javascript:void(0)" class="js-tag color4">computer</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">game</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">erlang</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -477,15 +487,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">erlang</a>
+                <a href="javascript:void(0)" class="js-tag color2">design</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">dns</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">design</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -513,6 +519,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">float</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">mix</a>
               </li>
              
@@ -522,10 +532,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">distillery</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">float</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -581,6 +587,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">versioncontrol</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">go</a>
               </li>
              
@@ -593,19 +603,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">versioncontrol</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">hex</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">os</a>
+                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -617,7 +619,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">root</a>
+                <a href="javascript:void(0)" class="js-tag color3">os</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -625,7 +627,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">log</a>
+                <a href="javascript:void(0)" class="js-tag color5">root</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -669,11 +671,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">windows</a>
+                <a href="javascript:void(0)" class="js-tag color4">env</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">proxy</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">windows</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -682,10 +688,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">npm</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">env</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -742,6 +744,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">charsets</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">log</a>
               </li>
              
               <li class="article-tag-list-item">
