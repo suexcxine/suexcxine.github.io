@@ -310,19 +310,19 @@
 
 
   
-    <article id="post-rlwrap" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-regular_expression" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2015/09/06/rlwrap/">rlwrap</a>
+      <a class="article-title" href="/2015/09/06/regular_expression/">正则表达式</a>
     </h1>
   
 
         
-        <a href="/2015/09/06/rlwrap/" class="archive-article-date">
+        <a href="/2015/09/06/regular_expression/" class="archive-article-date">
   	<time datetime="2015-09-05T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2015-09-06</time>
 </a>
         
@@ -330,7 +330,14 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>rlwrap is a wrapper that uses the GNU readline library to allow the editing of keyboard input for any other command.<br>Input history is kept between invocations, separately for each command; history completion and search work as in bash and completion word lists can be specified on the command line.</p>
+        <h2 id="关于-A-Z-的ASCII顺序和字典顺序的问题"><a href="#关于-A-Z-的ASCII顺序和字典顺序的问题" class="headerlink" title="关于[A-Z]的ASCII顺序和字典顺序的问题"></a>关于[A-Z]的ASCII顺序和字典顺序的问题</h2><p>[A-Z]这种正则表达式可能被解释为<a href="ASCII顺序">ABCDEFGHIJKLMNOPQRSTUVWXYZ</a>,<br>也可能被解释为<a href="字典顺序">AbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ</a></p>
+<p>例如, shell:<br>$ ls /usr/sbin/[A-Z]*<br>/usr/sbin/bccmd     /usr/sbin/fdformat    /usr/sbin/lpinfo    /usr/sbin/readprofile    /usr/sbin/update-dictcommon-hunspell</p>
+<p>$ ls /usr/sbin/[[:upper:]]*<br>/usr/sbin/ModemManager  /usr/sbin/NetworkManager</p>
+<p>而, erlang:</p>
+<blockquote>
+<p>filelib:wildcard(&quot;/usr/sbin/[A-Z]*&quot;).<br>[&quot;/usr/sbin/ModemManager&quot;,&quot;/usr/sbin/NetworkManager&quot;]</p>
+</blockquote>
+<p>貌似只有shell有这个问题</p>
 
       
 
@@ -358,7 +365,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2015/09/06/rlwrap/">展开全文 >></a>
+          <a class="article-more-a" href="/2015/09/06/regular_expression/">展开全文 >></a>
         </p>
       
 
@@ -468,19 +475,19 @@
 
 
   
-    <article id="post-regular_expression" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-rlwrap" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2015/09/06/regular_expression/">正则表达式</a>
+      <a class="article-title" href="/2015/09/06/rlwrap/">rlwrap</a>
     </h1>
   
 
         
-        <a href="/2015/09/06/regular_expression/" class="archive-article-date">
+        <a href="/2015/09/06/rlwrap/" class="archive-article-date">
   	<time datetime="2015-09-05T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2015-09-06</time>
 </a>
         
@@ -488,14 +495,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="关于-A-Z-的ASCII顺序和字典顺序的问题"><a href="#关于-A-Z-的ASCII顺序和字典顺序的问题" class="headerlink" title="关于[A-Z]的ASCII顺序和字典顺序的问题"></a>关于[A-Z]的ASCII顺序和字典顺序的问题</h2><p>[A-Z]这种正则表达式可能被解释为<a href="ASCII顺序">ABCDEFGHIJKLMNOPQRSTUVWXYZ</a>,<br>也可能被解释为<a href="字典顺序">AbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ</a></p>
-<p>例如, shell:<br>$ ls /usr/sbin/[A-Z]*<br>/usr/sbin/bccmd     /usr/sbin/fdformat    /usr/sbin/lpinfo    /usr/sbin/readprofile    /usr/sbin/update-dictcommon-hunspell</p>
-<p>$ ls /usr/sbin/[[:upper:]]*<br>/usr/sbin/ModemManager  /usr/sbin/NetworkManager</p>
-<p>而, erlang:</p>
-<blockquote>
-<p>filelib:wildcard(&quot;/usr/sbin/[A-Z]*&quot;).<br>[&quot;/usr/sbin/ModemManager&quot;,&quot;/usr/sbin/NetworkManager&quot;]</p>
-</blockquote>
-<p>貌似只有shell有这个问题</p>
+        <p>rlwrap is a wrapper that uses the GNU readline library to allow the editing of keyboard input for any other command.<br>Input history is kept between invocations, separately for each command; history completion and search work as in bash and completion word lists can be specified on the command line.</p>
 
       
 
@@ -523,7 +523,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2015/09/06/regular_expression/">展开全文 >></a>
+          <a class="article-more-a" href="/2015/09/06/rlwrap/">展开全文 >></a>
         </p>
       
 
@@ -1061,19 +1061,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">cs</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">linux</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">bash</a>
+                <a href="javascript:void(0)" class="js-tag color3">cs</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">internet</a>
+                <a href="javascript:void(0)" class="js-tag color5">bash</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1089,6 +1085,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">internet</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">apple</a>
               </li>
              
@@ -1101,18 +1101,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">aws</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">ec2</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">timezone</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">haskell</a>
               </li>
              
@@ -1122,6 +1110,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">test</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">aws</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">ec2</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">timezone</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1153,10 +1153,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">game</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">design</a>
               </li>
              
@@ -1169,6 +1165,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">game</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">erlang</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">dns</a>
               </li>
              
@@ -1178,10 +1182,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">network</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">erlang</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1257,15 +1257,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">programming</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">firewalld</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">iptables</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">programming</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1301,14 +1301,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">os</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">monitoring</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">java</a>
               </li>
              
@@ -1317,7 +1309,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">monitoring</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">compiler</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">os</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1369,18 +1369,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">nginx</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">openresty</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">debug</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">env</a>
               </li>
              
@@ -1401,7 +1389,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">nginx</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">openresty</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">debug</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">windows</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">python</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1413,15 +1417,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">python</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">protocol</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">keyboard</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1430,6 +1426,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">rbenv</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">keyboard</a>
               </li>
              
               <li class="article-tag-list-item">
