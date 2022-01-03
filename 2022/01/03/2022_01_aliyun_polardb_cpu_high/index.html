@@ -15,7 +15,7 @@
 <meta property="og:url" content="http://yoursite.com/2022/01/03/2022_01_aliyun_polardb_cpu_high/index.html">
 <meta property="og:site_name" content="Wind">
 <meta property="og:description" content="前几天遇到的，目前也没有完全水落石出，不过还是记录一下 大概的过程是：将一个有 1 亿多行表改成了分区表，然后发现只读结点的CPU从长期稳定的 20%以下升到了 50% 多， 并一直持续在这个水平。我以为是改分区表导致的，于是第二天我又执行DDL要改回非分区表。结果执行了半小时（过程中的监控图表很像是一直在干活的那种，就是 iops 等各种高）后提示 ERROR 8007 (HY000): Fai">
-<meta property="og:updated_time" content="2022-01-03T15:19:30.523Z">
+<meta property="og:updated_time" content="2022-01-03T15:27:06.248Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="记录一次 polardb CPU 高的问题">
 <meta name="twitter:description" content="前几天遇到的，目前也没有完全水落石出，不过还是记录一下 大概的过程是：将一个有 1 亿多行表改成了分区表，然后发现只读结点的CPU从长期稳定的 20%以下升到了 50% 多， 并一直持续在这个水平。我以为是改分区表导致的，于是第二天我又执行DDL要改回非分区表。结果执行了半小时（过程中的监控图表很像是一直在干活的那种，就是 iops 等各种高）后提示 ERROR 8007 (HY000): Fai">
@@ -179,9 +179,9 @@
 </blockquote>
 <p>这个说法一句话就是说分区表的DDL完成后统计信息重新维护了，于是执行计划走错了，没有走到最优的执行计划。但是，一亿多行的数据也花不了一天吧，。。顶多几分钟也足够了。。</p>
 <p>不过，还是学到了一点，遇到问题的时候，show full processlist 可能会让你发现一些问题，找到突破口。</p>
-<p>另外，下面有一段来自<a href="http://mysql.taobao.org/monthly/2018/10/01/" target="_blank" rel="noopener">淘宝数据库内核月报2018/10</a>的摘抄与本次事件有关，：</p>
+<p>另外，下面有一段来自<a href="http://mysql.taobao.org/monthly/2018/10/01/" target="_blank" rel="noopener">淘宝数据库内核月报2018/10</a>的摘抄与本次事件有关，</p>
 <h2 id="DDL与大事务和大查询的问题"><a href="#DDL与大事务和大查询的问题" class="headerlink" title="DDL与大事务和大查询的问题"></a>DDL与大事务和大查询的问题</h2><p>如果有一个大事务或者长事务长时间未提交，由于其长期持有MDL读锁，这个会带来很多问题。在RDS MySQL上，如果后续对这张表又有DDL操作，那么这个操作会被这个大事务给堵住。在POLARDB上，这个问题更加严重，简单的说，如果只读实例上有一个大事务或者长期未提交的事务，会影响主实例上的DDL，导致其超时失败。纠其本质的原因，是因为POLARDB基于共享存储的架构，因此在对表结构变更前，必须保证所有的读操作(包括主实例上的读和只读实例上的读)结束。</p>
-<p>具体解释一下POLARDB上DDL的过程。在DDL的不同阶段，当需要对表进行结构变更前，主实例自己获取MDL锁后，会写一条redolog日志，只读实例解析到这个日志后，会尝试获取同一个表上的MDL锁，如果失败，会反馈给主实例。主实例会等待所有只读实例同步到最新的复制位点，即所有实例都解析到这条加锁日志，主实例同时判断是否有实例加锁失败，如果没有，DDL就成功，否则失败回滚。</p>
+<p>具体解释一下POLARDB上DDL的过程。在DDL的不同阶段，当需要对表进行结构变更前，主实例自己获取MDL锁后，会写一条redolog日志，只读实例解析到这个日志后，会尝试获取同一个表上的MDL锁，如果失败，会反馈给主实例。<strong>主实例会等待所有只读实例同步到最新的复制位点，即所有实例都解析到这条加锁日志，主实例同时判断是否有实例加锁失败，如果没有，DDL就成功，否则失败回滚。</strong></p>
 <p>这里涉及到两个时间，一个是主实例等待所有只读实例同步的超时时间，这个由参数<code>loose_innodb_primary_abort_ddl_wait_replica_timeout</code>控制，默认是一个小时。另外一个是只读实例尝试加MDL锁的超时时间，由参数<code>loose_replica_lock_wait_timeout</code>控制，默认是50秒。可以调整这两个参数来提前结束回滚DDL，通过返回的错误信息，来判断是否有事务没结束。 <code>loose_innodb_primary_abort_ddl_wait_replica_timeout</code>建议比<code>loose_replica_lock_wait_timeout</code>大。</p>
 <p>举个实际例子方便理解： 用户可以通过命令<code>show processlist</code>中的State列观察，如果发现<code>Wait for syncing with replicas</code>字样，那么表示这条DDL目前处在等待只读节点同步的阶段。如果超过<code>loose_innodb_primary_abort_ddl_wait_replica_timeout</code>设置的时间，那么主节点会返回错误：</p>
 <figure class="highlight subunit"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ERROR </span>HY000: Rollback the statement as connected replica(s) delay too far away. You can kick out the slowest replica or increase variable 'innodb_abort_ddl_wait_replica_timeout'</span><br></pre></td></tr></table></figure>
@@ -423,6 +423,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">cs</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">bash</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">mysql</a>
               </li>
              
@@ -432,14 +440,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">cloud</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">bash</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">cs</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -471,6 +471,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">algorithm</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">web</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">aws</a>
               </li>
              
@@ -483,18 +491,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">encoding</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">web</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">computer</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
               </li>
              
@@ -503,7 +499,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">algorithm</a>
+                <a href="javascript:void(0)" class="js-tag color5">ddos</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -511,7 +507,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">ddos</a>
+                <a href="javascript:void(0)" class="js-tag color2">design</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">encoding</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -520,10 +520,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">centos</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">design</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -539,7 +535,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">network</a>
+                <a href="javascript:void(0)" class="js-tag color4">computer</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -548,6 +544,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">exception</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">network</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -567,11 +567,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">float</a>
+                <a href="javascript:void(0)" class="js-tag color4">ets</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">ets</a>
+                <a href="javascript:void(0)" class="js-tag color1">float</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -599,6 +599,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">firewalld</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">iptables</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">push</a>
               </li>
              
@@ -615,14 +623,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">firewalld</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">iptables</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">programming</a>
               </li>
              
@@ -631,15 +631,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">versioncontrol</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">gnu</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">screen</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">versioncontrol</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -695,6 +695,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">log</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">mac</a>
               </li>
              
@@ -708,14 +712,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">emoji</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">log</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">install</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -739,6 +735,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">install</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">env</a>
               </li>
              
@@ -755,11 +755,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">odbc</a>
+                <a href="javascript:void(0)" class="js-tag color3">windows</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">windows</a>
+                <a href="javascript:void(0)" class="js-tag color5">odbc</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -807,10 +807,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">wifi</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">socket</a>
               </li>
              
@@ -820,6 +816,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">charsets</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">wifi</a>
               </li>
              
               <li class="article-tag-list-item">
