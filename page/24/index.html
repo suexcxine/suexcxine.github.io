@@ -146,6 +146,86 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-erlang_tips" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/09/06/erlang_tips/">erlang tips</a>
+    </h1>
+  
+
+        
+        <a href="/2015/09/06/erlang_tips/" class="archive-article-date">
+  	<time datetime="2015-09-05T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2015-09-06</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>零碎的erlang知识<br>
+        
+          <a class="article-more-a" href="/2015/09/06/erlang_tips/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+<div class="article-tag tagcloud">
+	<i class="icon-price-tags icon"></i>
+	<ul class="article-tag-list">
+		
+		
+		<li class="article-tag-list-item">
+			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">
+				erlang</a>
+		</li>
+		
+		
+	</ul>
+</div>
+
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2015/09/06/erlang_tips/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-fdisk" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -544,19 +624,19 @@
 
 
   
-    <article id="post-regular_expression" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-rsync" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2015/09/06/regular_expression/">正则表达式</a>
+      <a class="article-title" href="/2015/09/06/rsync/">rsync</a>
     </h1>
   
 
         
-        <a href="/2015/09/06/regular_expression/" class="archive-article-date">
+        <a href="/2015/09/06/rsync/" class="archive-article-date">
   	<time datetime="2015-09-05T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2015-09-06</time>
 </a>
         
@@ -564,15 +644,10 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="关于-A-Z-的ASCII顺序和字典顺序的问题"><a href="#关于-A-Z-的ASCII顺序和字典顺序的问题" class="headerlink" title="关于[A-Z]的ASCII顺序和字典顺序的问题"></a>关于[A-Z]的ASCII顺序和字典顺序的问题</h2><p>[A-Z]这种正则表达式可能被解释为<a href="ASCII顺序">ABCDEFGHIJKLMNOPQRSTUVWXYZ</a>,<br>也可能被解释为<a href="字典顺序">AbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ</a></p>
-<p>例如, shell:<br>$ ls /usr/sbin/[A-Z]*<br>/usr/sbin/bccmd     /usr/sbin/fdformat    /usr/sbin/lpinfo    /usr/sbin/readprofile    /usr/sbin/update-dictcommon-hunspell</p>
-<p>$ ls /usr/sbin/[[:upper:]]*<br>/usr/sbin/ModemManager  /usr/sbin/NetworkManager</p>
-<p>而, erlang:</p>
-<blockquote>
-<p>filelib:wildcard(&quot;/usr/sbin/[A-Z]*&quot;).<br>[&quot;/usr/sbin/ModemManager&quot;,&quot;/usr/sbin/NetworkManager&quot;]</p>
-</blockquote>
-<p>貌似只有shell有这个问题</p>
-
+        <p>rsync是类unix系统下的数据镜像备份工具——remote sync。<br>
+        
+          <a class="article-more-a" href="/2015/09/06/rsync/#more">more >></a>
+        
       
 
       
@@ -599,7 +674,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2015/09/06/regular_expression/">展开全文 >></a>
+          <a class="article-more-a" href="/2015/09/06/rsync/">展开全文 >></a>
         </p>
       
 
@@ -707,19 +782,19 @@
 
 
   
-    <article id="post-rsync" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-regular_expression" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2015/09/06/rsync/">rsync</a>
+      <a class="article-title" href="/2015/09/06/regular_expression/">正则表达式</a>
     </h1>
   
 
         
-        <a href="/2015/09/06/rsync/" class="archive-article-date">
+        <a href="/2015/09/06/regular_expression/" class="archive-article-date">
   	<time datetime="2015-09-05T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2015-09-06</time>
 </a>
         
@@ -727,10 +802,15 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>rsync是类unix系统下的数据镜像备份工具——remote sync。<br>
-        
-          <a class="article-more-a" href="/2015/09/06/rsync/#more">more >></a>
-        
+        <h2 id="关于-A-Z-的ASCII顺序和字典顺序的问题"><a href="#关于-A-Z-的ASCII顺序和字典顺序的问题" class="headerlink" title="关于[A-Z]的ASCII顺序和字典顺序的问题"></a>关于[A-Z]的ASCII顺序和字典顺序的问题</h2><p>[A-Z]这种正则表达式可能被解释为<a href="ASCII顺序">ABCDEFGHIJKLMNOPQRSTUVWXYZ</a>,<br>也可能被解释为<a href="字典顺序">AbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ</a></p>
+<p>例如, shell:<br>$ ls /usr/sbin/[A-Z]*<br>/usr/sbin/bccmd     /usr/sbin/fdformat    /usr/sbin/lpinfo    /usr/sbin/readprofile    /usr/sbin/update-dictcommon-hunspell</p>
+<p>$ ls /usr/sbin/[[:upper:]]*<br>/usr/sbin/ModemManager  /usr/sbin/NetworkManager</p>
+<p>而, erlang:</p>
+<blockquote>
+<p>filelib:wildcard(&quot;/usr/sbin/[A-Z]*&quot;).<br>[&quot;/usr/sbin/ModemManager&quot;,&quot;/usr/sbin/NetworkManager&quot;]</p>
+</blockquote>
+<p>貌似只有shell有这个问题</p>
+
       
 
       
@@ -757,7 +837,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2015/09/06/rsync/">展开全文 >></a>
+          <a class="article-more-a" href="/2015/09/06/regular_expression/">展开全文 >></a>
         </p>
       
 
@@ -836,85 +916,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2015/09/06/ubuntu_bundle/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-unicode" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/09/06/unicode/">unicode</a>
-    </h1>
-  
-
-        
-        <a href="/2015/09/06/unicode/" class="archive-article-date">
-  	<time datetime="2015-09-05T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2015-09-06</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="UTF-8-字节流模板"><a href="#UTF-8-字节流模板" class="headerlink" title="UTF-8 字节流模板"></a>UTF-8 字节流模板</h2><p>1字节<br>000000 - 00007F 0xxxxxxx<br>2字节<br>000080 - 0007FF 110xxxxx 10xxxxxx<br>3字节<br>000800 - 00FFFF 1110xxxx 10xxxxxx 10xxxxxx<br>4字节<br>010000 - 10FFFF 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx<br>据此可以算出当前的字符会占几个字节</p>
-<h2 id="16-4e00-16-9fff是中日韩字符的unicode范围"><a href="#16-4e00-16-9fff是中日韩字符的unicode范围" class="headerlink" title="16#4e00-16#9fff是中日韩字符的unicode范围"></a>16#4e00-16#9fff是中日韩字符的unicode范围</h2><p>以此为依据判断一个字符是否中文字符?</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-<div class="article-tag tagcloud">
-	<i class="icon-price-tags icon"></i>
-	<ul class="article-tag-list">
-		
-		
-		<li class="article-tag-list-item">
-			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">
-				charsets</a>
-		</li>
-		
-		
-	</ul>
-</div>
-
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2015/09/06/unicode/">展开全文 >></a>
         </p>
       
 
@@ -1041,15 +1042,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">linux</a>
+                <a href="javascript:void(0)" class="js-tag color5">websocket</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">chrome</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">cs</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">bash</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1065,6 +1066,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">linux</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">bash</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">internet</a>
               </li>
              
@@ -1074,10 +1083,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">gui</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">test</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1093,14 +1098,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">algorithm</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">web</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">aws</a>
               </li>
              
@@ -1113,6 +1110,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">test</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">encoding</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">web</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
               </li>
              
@@ -1121,7 +1130,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">ddos</a>
+                <a href="javascript:void(0)" class="js-tag color4">computer</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">algorithm</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1129,11 +1142,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">design</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">encoding</a>
+                <a href="javascript:void(0)" class="js-tag color5">ddos</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1142,6 +1151,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">centos</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">design</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1157,7 +1170,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">computer</a>
+                <a href="javascript:void(0)" class="js-tag color3">network</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1165,15 +1178,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">exception</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">network</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">config</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">exception</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1221,14 +1230,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">firewalld</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">iptables</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">push</a>
               </li>
              
@@ -1245,11 +1246,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">programming</a>
+                <a href="javascript:void(0)" class="js-tag color5">firewalld</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">iptables</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">c</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">programming</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">versioncontrol</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1261,10 +1274,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">versioncontrol</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">go</a>
               </li>
              
@@ -1273,19 +1282,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">hex</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">os</a>
+                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">monitoring</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">os</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1337,6 +1346,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">install</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">nat</a>
               </li>
              
@@ -1357,10 +1370,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">install</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">env</a>
               </li>
              
@@ -1377,11 +1386,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">windows</a>
+                <a href="javascript:void(0)" class="js-tag color5">odbc</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">odbc</a>
+                <a href="javascript:void(0)" class="js-tag color3">windows</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1401,15 +1410,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">keyboard</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">ruby</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">rbenv</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">keyboard</a>
               </li>
              
               <li class="article-tag-list-item">
