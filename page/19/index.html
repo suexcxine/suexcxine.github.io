@@ -146,19 +146,19 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-erlang_rebar" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-erlang_relx" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2015/09/14/erlang_rebar/">erlang rebar</a>
+      <a class="article-title" href="/2015/09/14/erlang_relx/">erlang relx</a>
     </h1>
   
 
         
-        <a href="/2015/09/14/erlang_rebar/" class="archive-article-date">
+        <a href="/2015/09/14/erlang_relx/" class="archive-article-date">
   	<time datetime="2015-09-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2015-09-14</time>
 </a>
         
@@ -166,59 +166,14 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="获取帮助"><a href="#获取帮助" class="headerlink" title="获取帮助"></a>获取帮助</h2><blockquote>
-<p>rebar -c<br>获取指定命令的帮助如clean<br>rebar help clean</p>
-</blockquote>
-<h2 id="新建项目"><a href="#新建项目" class="headerlink" title="新建项目"></a>新建项目</h2><blockquote>
-<p>rebar create-app appid=myapp</p>
-</blockquote>
-<h2 id="编译"><a href="#编译" class="headerlink" title="编译"></a>编译</h2><blockquote>
-<p>rebar compile</p>
-</blockquote>
-<h2 id="清理"><a href="#清理" class="headerlink" title="清理"></a>清理</h2><blockquote>
-<p>rebar clean</p>
-</blockquote>
-<h2 id="单元测试"><a href="#单元测试" class="headerlink" title="单元测试"></a>单元测试</h2><p>在文件头部加上:</p>
+        <h2 id="如何在release不包含src代码"><a href="#如何在release不包含src代码" class="headerlink" title="如何在release不包含src代码"></a>如何在release不包含src代码</h2><p>relx.config里加上配置即可不包含源代码</p>
 <blockquote>
-<p>-ifdef(TEST).<br>-include_lib(&quot;eunit/include/eunit.hrl&quot;).<br>-endif.</p>
+<p>{include_src, false}.</p>
 </blockquote>
-<p>在文件尾部加上类似如下代码:</p>
+<h2 id="怎么不让wx-observer等app一开始就启动但是又包含在release里"><a href="#怎么不让wx-observer等app一开始就启动但是又包含在release里" class="headerlink" title="怎么不让wx, observer等app一开始就启动但是又包含在release里"></a>怎么不让wx, observer等app一开始就启动但是又包含在release里</h2><p>在relx.config里加上就可以了, 如下</p>
 <blockquote>
-<p>-ifdef(TEST).</p>
-<p>simple_test() -&gt;<br>    ok = application:start(myapp),<br>    ?assertNot(undefined == whereis(myapp_sup)).</p>
-<p>-endif.</p>
+<p>{release, {suex_1, &quot;1&quot;}, [suex, wx, observer]}.</p>
 </blockquote>
-<p>执行单元测试</p>
-<blockquote>
-<p>rebar compile eunit</p>
-</blockquote>
-<h2 id="覆盖率测试"><a href="#覆盖率测试" class="headerlink" title="覆盖率测试"></a>覆盖率测试</h2><p>在rebar.config配置文件中加上:</p>
-<blockquote>
-<p>{cover_enabled, true}.</p>
-</blockquote>
-<p>执行覆盖率测试</p>
-<blockquote>
-<p>$ rebar compile eunit<br>==&gt; myapp (compile)<br>==&gt; myapp (eunit)<br>  Test passed.<br>Cover analysis: /Users/dizzyd/tmp/myapp/.eunit/index.html</p>
-</blockquote>
-<p>可以打开.eunit/index.html文件检查覆盖率的分析报告</p>
-<h2 id="Rebar-conventions"><a href="#Rebar-conventions" class="headerlink" title="Rebar conventions"></a>Rebar conventions</h2><ul>
-<li>rebar会在test目录中寻找EUnit测试代码</li>
-<li>c_src文件夹存储用于编译port driver的c代码文件</li>
-</ul>
-<h2 id="Dynamic-configuration"><a href="#Dynamic-configuration" class="headerlink" title="Dynamic configuration"></a>Dynamic configuration</h2><p>这个功能提供一些定制空间</p>
-<p>如果存在rebar.config.script文件(与rebar.config在同一目录),<br>那么该文件会被以file:script/2函数读取并执行,最后一个表达式的值会被返回做为结果<br>同样的,对其他自定义的rebar.config文件也适用,<br>如rebar -C special_config会尝试读取special.config.script文件<br>例如:</p>
-<blockquote>
-<p>case os:getenv(&quot;REBAR_DEPS&quot;) of<br>    false -&gt; CONFIG; % env var not defined<br>    []    -&gt; CONFIG; % env var set to empty string<br>    Dir -&gt;<br>    lists:keystore(deps_dir, 1, CONFIG, {deps_dir, Dir})<br>end.</p>
-</blockquote>
-<p>这段代码的功能是,如果想自定义一个依赖目录而不是每次都从github取依赖的话设置REBAR_DEPS环境变量<br>反过来,不设置REBAR_DEPS环境变量则会从github取依赖</p>
-<h2 id="优先编译"><a href="#优先编译" class="headerlink" title="优先编译"></a>优先编译</h2><figure class="highlight prolog"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;erl_first_files, [<span class="string">"src/mymib1.erl"</span>, <span class="string">"src/mymib2.erl"</span>]&#125;.</span><br></pre></td></tr></table></figure>
-<h2 id="条件编译"><a href="#条件编译" class="headerlink" title="条件编译"></a>条件编译</h2><p>可以使用另一个config来做条件编译之用<br>如:rebar_ct.config</p>
-<blockquote>
-<p>{erl_opts, [debug_info, {d, <code>&#39;TEST&#39;</code>, true}]}.</p>
-</blockquote>
-<p>使用-C参数指定config文件(非默认的rebar.config),<br>进一步可以使用Makefile<br>记得先clean掉之前的编译结果,因为rebar只会编译未编译过的模块,<br>如果不clean,那么已编译的模块不会被重新编译<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./rebar -C <span class="string">"rebar_ct.config"</span> clean compile ct</span><br></pre></td></tr></table></figure></p>
-<h2 id="lib-dirs配置"><a href="#lib-dirs配置" class="headerlink" title="lib_dirs配置"></a>lib_dirs配置</h2><p>rebar.config:<br><figure class="highlight erlang"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;lib_dirs, [<span class="string">"deps"</span>]&#125;.</span><br></pre></td></tr></table></figure></p>
-<p>编译代码时,有时出现Warning: behaviour ranch_protocol undefined这样的错误,<br>原因是compile:file执行时无法在搜索路径里找到ranch_protocol:behaviour_info/1函数,<br>而对于rebar这样一个escript程序,无法使用-pa,-pz来扩展搜索路径,<br>只能在代码里使用code:add_pathsa等来动态添加, 其依据即为lib_dirs配置<br>参考链接: <a href="http://erlang.2086793.n4.nabble.com/Behavior-undefined-warning-td2088824.html" target="_blank" rel="noopener">http://erlang.2086793.n4.nabble.com/Behavior-undefined-warning-td2088824.html</a></p>
 
       
 
@@ -246,7 +201,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2015/09/14/erlang_rebar/">展开全文 >></a>
+          <a class="article-more-a" href="/2015/09/14/erlang_relx/">展开全文 >></a>
         </p>
       
 
@@ -1232,18 +1187,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">websocket</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">chrome</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">cs</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">mysql</a>
               </li>
              
@@ -1256,7 +1199,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">websocket</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">chrome</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">linux</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">cs</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1276,6 +1231,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">test</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">apple</a>
               </li>
              
@@ -1285,6 +1244,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">payment</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">encoding</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1300,18 +1263,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">test</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">encoding</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">web</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
               </li>
              
@@ -1324,15 +1275,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">web</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">ddos</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">algorithm</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">game</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">ddos</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1348,11 +1303,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">erlang</a>
+                <a href="javascript:void(0)" class="js-tag color4">dns</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">dns</a>
+                <a href="javascript:void(0)" class="js-tag color2">erlang</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1444,11 +1399,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">c</a>
+                <a href="javascript:void(0)" class="js-tag color2">programming</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">programming</a>
+                <a href="javascript:void(0)" class="js-tag color2">c</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1480,11 +1435,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">monitoring</a>
+                <a href="javascript:void(0)" class="js-tag color3">os</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">os</a>
+                <a href="javascript:void(0)" class="js-tag color1">monitoring</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1588,19 +1543,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">protocol</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">plug</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">cowboy</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">keyboard</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1612,6 +1559,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">keyboard</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">html</a>
               </li>
              
@@ -1620,11 +1571,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">protocol</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">cdn</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">ubuntu</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">wifi</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1637,10 +1596,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">charsets</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">wifi</a>
               </li>
              
               <li class="article-tag-list-item">
