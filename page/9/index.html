@@ -166,6 +166,97 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-go_flaws" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/07/19/go_flaws/">go语言槽点</a>
+    </h1>
+  
+
+        
+        <a href="/2016/07/19/go_flaws/" class="archive-article-date">
+  	<time datetime="2016-07-19T13:27:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-07-19</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>想起一条写一条,<br>之后尽量补上例子和理想的做法</p>
+<h2 id="定义类型的地方允许x-y-z-int这种写法表示x-y-z均为int型"><a href="#定义类型的地方允许x-y-z-int这种写法表示x-y-z均为int型" class="headerlink" title="定义类型的地方允许x, y, z int这种写法表示x, y, z均为int型"></a>定义类型的地方允许x, y, z int这种写法表示x, y, z均为int型</h2><p>可读性不好</p>
+<h2 id="没有重载"><a href="#没有重载" class="headerlink" title="没有重载"></a>没有重载</h2><p>许多package里看到大片的XXXInt, XXXInt64, XXXUint64, ...<br>视觉污染, 写代码麻烦, 改代码也麻烦</p>
+<h2 id="defer"><a href="#defer" class="headerlink" title="defer"></a>defer</h2><ul>
+<li>可读性不好, 本身就已经颠覆了一般性的顺序执行思维, 写在前面, 执行却在后面,<br>而且多条defer在一起还是LIFO顺序, 真是counter-intuitive,<br>还是像其他语言那样try finally比较好, 或者像python, C#那样有with语句更好,</li>
+<li>容易引发bug, 因为defer可以修改return语句的值, 使得return语句处具有不确定性,<br>使得程序员容易搞错</li>
+</ul>
+<h2 id="var"><a href="#var" class="headerlink" title="var, :=, ="></a>var, :=, =</h2><p>太容易出错了, 何必整这么多种, 而且a, b := xxx时, a, b中有一个未定义也合法, 简直dirty<br>编译后经常报:=前面没有新变量,然后去改成=号,许多时间就浪费在这种事情上<br>像python或erlang那样都是=对大家都好<br>平白增加程序员需要处理的细节, 与go宣传的简单化背道而驰</p>
+<h2 id="没有implement这样的关键字"><a href="#没有implement这样的关键字" class="headerlink" title="没有implement这样的关键字"></a>没有implement这样的关键字</h2><p>无意中就实现了某interface{},<br>违背了程序员的意志,<br>带来意想不到的问题</p>
+<h2 id="closure做得不对"><a href="#closure做得不对" class="headerlink" title="closure做得不对"></a>closure做得不对</h2><p>直接定义一个匿名函数,函数用到的外部变量并不是当时的变量快照,而是一个引用,<br>想要真正的closure需要用传参来做.<br><a href="https://www.goinggo.net/2014/06/pitfalls-with-closures-in-go.html" target="_blank" rel="noopener">https://www.goinggo.net/2014/06/pitfalls-with-closures-in-go.html</a></p>
+<h2 id="一个package可以对应多个文件"><a href="#一个package可以对应多个文件" class="headerlink" title="一个package可以对应多个文件"></a>一个package可以对应多个文件</h2><p>函数定义还需要到别的文件里去找. import语句也重复了</p>
+<h2 id="没有泛型"><a href="#没有泛型" class="headerlink" title="没有泛型"></a>没有泛型</h2><h2 id="返回error"><a href="#返回error" class="headerlink" title="返回error"></a>返回error</h2><p>每一层函数调用都要check一遍,到处都充斥着if err != nil<br>中间层函数只是因为调到了返回error的函数,自己的返回值也被迫加上error</p>
+<h2 id="没有条件表达式"><a href="#没有条件表达式" class="headerlink" title="没有条件表达式"></a>没有条件表达式</h2><p>当然这个不是什么致命伤,<br>但是需要的时候发现go代码写起来巨麻烦,<br>其实希望最好像函数式编程那样一切都是表达式,if或case等都能有一个返回值</p>
+<h1 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h1><h2 id="gofmt"><a href="#gofmt" class="headerlink" title="gofmt"></a>gofmt</h2><p>虽然别的语言也可以一个插件搞定, 不过go这方面做得不错<br>由于是官方提供的, 大家就统一了</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+<div class="article-tag tagcloud">
+	<i class="icon-price-tags icon"></i>
+	<ul class="article-tag-list">
+		
+		
+		<li class="article-tag-list-item">
+			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">
+				go</a>
+		</li>
+		
+		
+	</ul>
+</div>
+
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2016/07/19/go_flaws/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-python" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -931,86 +1022,6 @@
 
 
   
-    <article id="post-gogs" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/06/17/gogs/">gogs</a>
-    </h1>
-  
-
-        
-        <a href="/2016/06/17/gogs/" class="archive-article-date">
-  	<time datetime="2016-06-17T07:09:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-06-17</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>自己搭一个git server<br>gogs与github有点不一样的地方, 坑了我...<br>不过总体上gogs还是方便好用的<br>
-        
-          <a class="article-more-a" href="/2016/06/17/gogs/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-<div class="article-tag tagcloud">
-	<i class="icon-price-tags icon"></i>
-	<ul class="article-tag-list">
-		
-		
-		<li class="article-tag-list-item">
-			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">
-				versioncontrol</a>
-		</li>
-		
-		
-	</ul>
-</div>
-
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2016/06/17/gogs/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/page/8/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><span class="page-number current">9</span><a class="page-number" href="/page/10/">10</a><a class="page-number" href="/page/11/">11</a><span class="space">&hellip;</span><a class="page-number" href="/page/28/">28</a><a class="extend next" rel="next" href="/page/10/">Next &raquo;</a>
@@ -1112,7 +1123,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">cs</a>
+                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">db</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">cloud</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1121,6 +1140,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">chrome</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">cs</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1136,18 +1159,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">db</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">cloud</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">internet</a>
               </li>
              
@@ -1157,10 +1168,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">gui</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">test</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1176,7 +1183,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">encoding</a>
+                <a href="javascript:void(0)" class="js-tag color5">test</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1192,19 +1199,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">encoding</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">web</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">olap</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">ddos</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1216,11 +1215,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">game</a>
+                <a href="javascript:void(0)" class="js-tag color5">ddos</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">design</a>
+                <a href="javascript:void(0)" class="js-tag color5">game</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1229,6 +1228,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">centos</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">design</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">olap</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1241,10 +1252,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">network</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">exception</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1269,6 +1276,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">float</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">exception</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1356,15 +1367,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">monitoring</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">os</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">compiler</a>
+                <a href="javascript:void(0)" class="js-tag color1">monitoring</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1376,11 +1383,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">root</a>
+                <a href="javascript:void(0)" class="js-tag color4">compiler</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">json</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">root</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1436,6 +1447,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">env</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">proxy</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">node</a>
               </li>
              
@@ -1452,14 +1471,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">proxy</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">python</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">plug</a>
               </li>
              
@@ -1472,7 +1483,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">env</a>
+                <a href="javascript:void(0)" class="js-tag color2">python</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1500,11 +1511,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">ubuntu</a>
+                <a href="javascript:void(0)" class="js-tag color5">operation</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">wifi</a>
+                <a href="javascript:void(0)" class="js-tag color2">ubuntu</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1516,15 +1527,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">wifi</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">charsets</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">ftp</a>
+                <a href="javascript:void(0)" class="js-tag color4">sns</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">sns</a>
+                <a href="javascript:void(0)" class="js-tag color4">ftp</a>
               </li>
              
               <li class="article-tag-list-item">

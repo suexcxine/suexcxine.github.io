@@ -166,6 +166,116 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-TLCL_notes_35" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/09/07/TLCL_notes_35/">&lt;&lt;The Linux Command Line&gt;&gt; 第三五章笔记 字符串和数字</a>
+    </h1>
+  
+
+        
+        <a href="/2015/09/07/TLCL_notes_35/" class="archive-article-date">
+  	<time datetime="2015-09-07T12:00:35.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2015-09-07</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="parameter-word"><a href="#parameter-word" class="headerlink" title="\${parameter:-word}"></a>\${parameter:-word}</h2><p>若 parameter 没有设置（例如，不存在）或者为空，展开结果是 word 的值。<br>若 parameter 不为空，则展开结果是 parameter 的值。<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">echo</span> <span class="variable">$&#123;foo:-"substitute value if unset"&#125;</span></span></span><br></pre></td></tr></table></figure></p>
+<p>substitute value if unset</p>
+<h2 id="parameter-word-1"><a href="#parameter-word-1" class="headerlink" title="\${parameter:=word}"></a>\${parameter:=word}</h2><p>若 parameter 没有设置或为空，展开结果是 word 的值。另外，word 的值会赋值给 parameter。<br>若 parameter 不为空，展开结果是 parameter 的值。<br>注意： 位置参数或其它的特殊参数不能以这种方式赋值。</p>
+<h2 id="parameter-word-2"><a href="#parameter-word-2" class="headerlink" title="\${parameter:?word}"></a>\${parameter:?word}</h2><p>若 parameter 没有设置或为空，这种展开导致脚本带有错误退出，并且 word 的内容会发送到标准错误。<br>若 parameter 不为空， 展开结果是 parameter 的值。<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">echo</span> <span class="variable">$&#123;foo:?"parameter is empty"&#125;</span></span></span><br></pre></td></tr></table></figure></p>
+<p>bash: foo: parameter is empty</p>
+<h2 id="parameter-word-3"><a href="#parameter-word-3" class="headerlink" title="\${parameter:+word}"></a>\${parameter:+word}</h2><p>若 parameter 没有设置或为空，展开结果为空。<br>若 parameter 不为空， 展开结果是 word 的值会替换掉 parameter 的值；然而，parameter 的值不会改变。<br>返回变量名的参数展开<br>shell 具有返回变量名的能力。这会用在一些相当独特的情况下。</p>
+<h2 id="prefix"><a href="#prefix" class="headerlink" title="\${!prefix*}"></a>\${!prefix*}</h2><h2 id="prefix-1"><a href="#prefix-1" class="headerlink" title="\${!prefix@}"></a>\${!prefix@}</h2><p>这种展开会返回以 prefix 开头的已有变量名。根据 bash 文档，这两种展开形式的执行结果相同。<br>这里，我们列出了所有以 BASH 开头的环境变量名：<br><figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[me@linuxbox ~]$ echo $&#123;!<span class="keyword">BASH*&#125;</span></span><br><span class="line"><span class="keyword">BASH </span><span class="keyword">BASH_ARGC </span><span class="keyword">BASH_ARGV </span><span class="keyword">BASH_COMMAND </span><span class="keyword">BASH_COMPLETION</span></span><br><span class="line"><span class="keyword">BASH_COMPLETION_DIR </span><span class="keyword">BASH_LINENO </span><span class="keyword">BASH_SOURCE </span><span class="keyword">BASH_SUBSHELL</span></span><br><span class="line"><span class="keyword">BASH_VERSINFO </span><span class="keyword">BASH_VERSION</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="35-parameter"><a href="#35-parameter" class="headerlink" title="\${&#35;parameter}"></a>\${&#35;parameter}</h2><p>展开成由 parameter 所包含的字符串的长度。</p>
+<h2 id="parameter-offset"><a href="#parameter-offset" class="headerlink" title="\${parameter:offset}"></a>\${parameter:offset}</h2><h2 id="parameter-offset-length"><a href="#parameter-offset-length" class="headerlink" title="\${parameter:offset:length}"></a>\${parameter:offset:length}</h2><p>这些展开用来从 parameter 所包含的字符串中提取一部分字符。<br>若 offset 的值为负数，则认为 offset 值是从字符串的末尾开始算起，而不是从开头。<br>注意负数前面必须有一个空格， 为防止与 \${parameter:-word} 展开形式混淆。length，若出现，则必须不能小于零。</p>
+<h2 id="parameter-pattern"><a href="#parameter-pattern" class="headerlink" title="\${parameter#pattern}"></a>\${parameter#pattern}</h2><h2 id="parameter-pattern-1"><a href="#parameter-pattern-1" class="headerlink" title="\${parameter##pattern}"></a>\${parameter##pattern}</h2><p>这些展开会从 paramter 所包含的字符串中清除开头一部分文本，这些字符要匹配定义的 patten。p<br>attern 是 通配符模式，就如那些用在路径名展开中的模式。这两种形式的差异之处是该 # 形式清除最短的匹配结果， 而该 ## 模式清除最长的匹配结果。</p>
+<figure class="highlight elixir"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[me<span class="variable">@linuxbox</span> ~]<span class="variable">$ </span>foo=file.txt.zip</span><br><span class="line">[me<span class="variable">@linuxbox</span> ~]<span class="variable">$ </span>echo <span class="variable">$&#123;</span>foo<span class="comment">#*.&#125;</span></span><br><span class="line">txt.zip</span><br><span class="line">[me<span class="variable">@linuxbox</span> ~]<span class="variable">$ </span>echo <span class="variable">$&#123;</span>foo<span class="comment">##*.&#125;</span></span><br><span class="line">zip</span><br></pre></td></tr></table></figure>
+<h2 id="parameter-pattern-2"><a href="#parameter-pattern-2" class="headerlink" title="\${parameter%pattern}"></a>\${parameter%pattern}</h2><h2 id="parameter-pattern-3"><a href="#parameter-pattern-3" class="headerlink" title="\${parameter%%pattern}"></a>\${parameter%%pattern}</h2><p>这些展开和上面的 # 和 ## 展开一样，除了它们清除的文本从 parameter 所包含字符串的末尾开始，而不是开头。<br><figure class="highlight elixir"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[me<span class="variable">@linuxbox</span> ~]<span class="variable">$ </span>foo=file.txt.zip</span><br><span class="line">[me<span class="variable">@linuxbox</span> ~]<span class="variable">$ </span>echo <span class="variable">$&#123;</span>foo%.*&#125;</span><br><span class="line">file.txt</span><br><span class="line">[me<span class="variable">@linuxbox</span> ~]<span class="variable">$ </span>echo <span class="variable">$&#123;</span>foo%%.*&#125;</span><br><span class="line">file</span><br></pre></td></tr></table></figure></p>
+<h2 id="time"><a href="#time" class="headerlink" title="time"></a>time</h2><p>使用 time 命令来比较这两个脚本版本的效率<br>time可以测试脚本的执行时间</p>
+<h2 id="declare-命令可以用来把字符串规范成大写或小写字符"><a href="#declare-命令可以用来把字符串规范成大写或小写字符" class="headerlink" title="declare 命令可以用来把字符串规范成大写或小写字符"></a>declare 命令可以用来把字符串规范成大写或小写字符</h2><p>使用 declare 命令，我们能强制一个 变量总是包含所需的格式，无论如何赋值给它。<br>declare -u upper<br>declare -l lower</p>
+<h2 id="大小写转换参数展开"><a href="#大小写转换参数展开" class="headerlink" title="大小写转换参数展开"></a>大小写转换参数展开</h2><ul>
+<li>${parameter,,}    把 parameter 的值全部展开成小写字母。</li>
+<li>${parameter,}     仅仅把 parameter 的第一个字符展开成小写字母。</li>
+<li>${parameter^^}    把 parameter 的值全部转换成大写字母。</li>
+<li>${parameter^}     仅仅把 parameter 的第一个字符转换成大写字母（首字母大写）。</li>
+</ul>
+<h2 id="在算术表达式中，shell-支持任意进制的整形常量。"><a href="#在算术表达式中，shell-支持任意进制的整形常量。" class="headerlink" title="在算术表达式中，shell 支持任意进制的整形常量。"></a>在算术表达式中，shell 支持任意进制的整形常量。</h2><ul>
+<li>number      默认情况下，没有任何表示法的数字被看做是十进制数（以10为底）。</li>
+<li>0number     在算术表达式中，以零开头的数字被认为是八进制数。</li>
+<li>0xnumber    十六进制表示法</li>
+<li>base#number number 以 base 为底</li>
+</ul>
+<h2 id="bc-一种高精度计算器语言"><a href="#bc-一种高精度计算器语言" class="headerlink" title="bc - 一种高精度计算器语言"></a>bc - 一种高精度计算器语言</h2>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+<div class="article-tag tagcloud">
+	<i class="icon-price-tags icon"></i>
+	<ul class="article-tag-list">
+		
+		
+		<li class="article-tag-list-item">
+			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">
+				linux</a>
+		</li>
+		
+		
+		
+		<li class="article-tag-list-item">
+			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">
+				bash</a>
+		</li>
+		
+		
+	</ul>
+</div>
+
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2015/09/07/TLCL_notes_35/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-TLCL_notes_34" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -988,91 +1098,6 @@
 
 
   
-    <article id="post-TLCL_notes_25" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/09/07/TLCL_notes_25/">&lt;&lt;The Linux Command Line&gt;&gt; 第二五章笔记</a>
-    </h1>
-  
-
-        
-        <a href="/2015/09/07/TLCL_notes_25/" class="archive-article-date">
-  	<time datetime="2015-09-07T12:00:25.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2015-09-07</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="编写第一个-Shell-脚本"><a href="#编写第一个-Shell-脚本" class="headerlink" title="编写第一个 Shell 脚本"></a>编写第一个 Shell 脚本</h2><p>:set autoindent<br>打开 “auto indent” 功能。这导致 vim 能对新的文本行缩进与刚输入的文本行相同的列数。<br>对于许多编程结构来说，这就加速了输入。停止缩进，输入 Ctrl-d。</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-<div class="article-tag tagcloud">
-	<i class="icon-price-tags icon"></i>
-	<ul class="article-tag-list">
-		
-		
-		<li class="article-tag-list-item">
-			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">
-				linux</a>
-		</li>
-		
-		
-		
-		<li class="article-tag-list-item">
-			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">
-				bash</a>
-		</li>
-		
-		
-	</ul>
-</div>
-
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2015/09/07/TLCL_notes_25/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/page/19/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/18/">18</a><a class="page-number" href="/page/19/">19</a><span class="page-number current">20</span><a class="page-number" href="/page/21/">21</a><a class="page-number" href="/page/22/">22</a><span class="space">&hellip;</span><a class="page-number" href="/page/28/">28</a><a class="extend next" rel="next" href="/page/21/">Next &raquo;</a>
@@ -1174,7 +1199,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">cs</a>
+                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">db</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">cloud</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1183,6 +1216,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">chrome</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">cs</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1198,18 +1235,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">db</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">cloud</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">internet</a>
               </li>
              
@@ -1219,10 +1244,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">gui</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">test</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1238,7 +1259,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">encoding</a>
+                <a href="javascript:void(0)" class="js-tag color5">test</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1254,19 +1275,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">encoding</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">web</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">olap</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">ddos</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1278,11 +1291,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">game</a>
+                <a href="javascript:void(0)" class="js-tag color5">ddos</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">design</a>
+                <a href="javascript:void(0)" class="js-tag color5">game</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1291,6 +1304,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">centos</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">design</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">olap</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1303,10 +1328,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">network</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">exception</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1331,6 +1352,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">float</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">exception</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1418,15 +1443,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">monitoring</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">os</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">compiler</a>
+                <a href="javascript:void(0)" class="js-tag color1">monitoring</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1438,11 +1459,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">root</a>
+                <a href="javascript:void(0)" class="js-tag color4">compiler</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">json</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">root</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1498,6 +1523,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">env</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">proxy</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">node</a>
               </li>
              
@@ -1514,14 +1547,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">proxy</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">python</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">plug</a>
               </li>
              
@@ -1534,7 +1559,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">env</a>
+                <a href="javascript:void(0)" class="js-tag color2">python</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1562,11 +1587,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">ubuntu</a>
+                <a href="javascript:void(0)" class="js-tag color5">operation</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">wifi</a>
+                <a href="javascript:void(0)" class="js-tag color2">ubuntu</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1578,15 +1603,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">wifi</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">charsets</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">ftp</a>
+                <a href="javascript:void(0)" class="js-tag color4">sns</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">sns</a>
+                <a href="javascript:void(0)" class="js-tag color4">ftp</a>
               </li>
              
               <li class="article-tag-list-item">
