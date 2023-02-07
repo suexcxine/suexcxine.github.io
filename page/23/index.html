@@ -166,6 +166,105 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-TLCL_notes_6" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/09/07/TLCL_notes_6/">&lt;&lt;The Linux Command Line&gt;&gt; 第六章笔记</a>
+    </h1>
+  
+
+        
+        <a href="/2015/09/07/TLCL_notes_6/" class="archive-article-date">
+  	<time datetime="2015-09-07T12:00:06.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2015-09-07</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="命令"><a href="#命令" class="headerlink" title="命令"></a>命令</h2><p>命令可以是下面四种形式之一：</p>
+<ul>
+<li>一个可执行程序，就像我们所看到的位于目录/usr/bin中的文件一样。属于这一类的程序，可以是二进制文件，诸如用C和C++语言写成的程序, 也可以是由脚本语言写成的程序，比如说shell，python等等。</li>
+<li>一个内建于shell自身的命令。bash 支持若干命令，内部叫做shell内部命令 (builtins)。例如，cd 命令，就是一个shell内部命令。</li>
+<li>一个 shell 函数。这些是小规模的shell脚本，它们混合到环境变量中。在后续的章节里，我们将讨论配置环境变量以及书写shell函数。但是现在，仅仅意识到它们的存在就可以了。</li>
+<li>一个命令别名。我们可以定义自己的命令，建立在其它命令之上。</li>
+</ul>
+<p>type － 显示命令的类型</p>
+<p>which － 显示一个可执行程序的位置</p>
+<p>help － 得到 shell 内部命令的帮助文档</p>
+<p>apropos － 搜索参考手册并显示适当的命令</p>
+<p>whatis － 显示非常简洁的命令说明</p>
+<h2 id="别名"><a href="#别名" class="headerlink" title="别名"></a>别名</h2><p>使用alias之前用type检查打算使用的别名名称是否已被占用<br><figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">alias</span> foo='<span class="keyword">cd</span> <span class="string">/usr</span>; <span class="keyword">ls</span>; <span class="keyword">cd</span> -'</span><br></pre></td></tr></table></figure></p>
+<p>删除别名，使用 unalias 命令，像这样：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">unalias</span> foo</span><br></pre></td></tr></table></figure></p>
+<p>直接输入alias显示所有别名</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+<div class="article-tag tagcloud">
+	<i class="icon-price-tags icon"></i>
+	<ul class="article-tag-list">
+		
+		
+		<li class="article-tag-list-item">
+			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">
+				linux</a>
+		</li>
+		
+		
+		
+		<li class="article-tag-list-item">
+			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">
+				bash</a>
+		</li>
+		
+		
+	</ul>
+</div>
+
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2015/09/07/TLCL_notes_6/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-TLCL_notes_5" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -983,101 +1082,6 @@
 
 
   
-    <article id="post-erlang_distribution" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/09/06/erlang_distribution/">erlang distribution</a>
-    </h1>
-  
-
-        
-        <a href="/2015/09/06/erlang_distribution/" class="archive-article-date">
-  	<time datetime="2015-09-05T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2015-09-06</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="连不上时怎么办"><a href="#连不上时怎么办" class="headerlink" title="连不上时怎么办??"></a>连不上时怎么办??</h2><p>cookie对吗? erlang:get_cookie()看一下两边是否一样<br>结点名不是nonode@nohost吧, erlang:is_alive()返回true才行<br>两边的端口开了吗?epmd的默认端口是4369,<br>不光默认端口, 还得开一批别的端口用于结点间socket通信,<br>可以查看自己机器上各结点的端口<br>如:</p>
-<blockquote>
-<p>$ epmd -names<br>epmd: up and running on port 4369 with data:<br>name aries_game at port 44554</p>
-</blockquote>
-<p>可以设置epmd使用的端口范围, 以便在防火墙中开放这些端口</p>
-<blockquote>
-<p>erl -sname abc -kernel inet_dist_listen_min 4370 inet_dist_listen_max 4375</p>
-</blockquote>
-<p>代码中如下设置</p>
-<blockquote>
-<p>application:set_env(kernel, inet_dist_listen_min, 4370).<br>application:set_env(kernel, inet_dist_listen_max, 4375).</p>
-</blockquote>
-<h2 id="kernel-dist-auto-connect-never"><a href="#kernel-dist-auto-connect-never" class="headerlink" title="-kernel dist_auto_connect never"></a>-kernel dist_auto_connect never</h2><p>该情况下,该结点不会主动连接其他结点,<br>使用net_kernel:connect_node可以连上其他结点,<br>并且还会跟其他结点的已知结点(没有设dist_auto_connect never的结点)都连上<br>因为对面连过来了, 即双方只要有一方没设dist_auto_connect never, 那么你不自动连接它, 它会自动连接你</p>
-<h2 id="erlang-Can-apos-t-set-long-node-name的问题"><a href="#erlang-Can-apos-t-set-long-node-name的问题" class="headerlink" title="erlang Can&apos;t set long node name的问题"></a>erlang Can&apos;t set long node name的问题</h2><p>报错信息如下:<br><figure class="highlight erlang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ erl -name aaa -setcookie abc</span><br><span class="line">&#123;error_logger,&#123;&#123;<span class="number">2015</span>,<span class="number">7</span>,<span class="number">23</span>&#125;,&#123;<span class="number">17</span>,<span class="number">25</span>,<span class="number">1</span>&#125;&#125;,<span class="string">"Can't set long node name!\nPlease check your configuration\n"</span>,[]&#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure></p>
-<p>解决办法:<br>在/etc/hosts中增加一行,如自己的ip是192.168.1.108<br>192.168.1.108   chenduo-desktop.localdomain chenduo-desktop</p>
-<p>问题解决:<br>$ erl -name aaa -setcookie abc<br>Erlang R15B (erts-5.9) [source] [64-bit] [smp:4:4] [async-threads:0] [hipe] [kernel-poll:false]</p>
-<p>Eshell V5.9  (abort with ^G)<br>(aaa@chenduo-desktop.localdomain)1&gt;</p>
-<h2 id="如何判断本结点与某结点是否已连接"><a href="#如何判断本结点与某结点是否已连接" class="headerlink" title="如何判断本结点与某结点是否已连接?"></a>如何判断本结点与某结点是否已连接?</h2><p>1, lists:member(xxx, nodes()), 但是这个不能保障后续通信成功<br>2, erlang:monitor_node, 断开时得到通知<br>3, call目标进程, 得到执行结果或得到错误如nodedown的话就没连接</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-<div class="article-tag tagcloud">
-	<i class="icon-price-tags icon"></i>
-	<ul class="article-tag-list">
-		
-		
-		<li class="article-tag-list-item">
-			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">
-				erlang</a>
-		</li>
-		
-		
-	</ul>
-</div>
-
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2015/09/06/erlang_distribution/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/page/22/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/21/">21</a><a class="page-number" href="/page/22/">22</a><span class="page-number current">23</span><a class="page-number" href="/page/24/">24</a><a class="page-number" href="/page/25/">25</a><span class="space">&hellip;</span><a class="page-number" href="/page/28/">28</a><a class="extend next" rel="next" href="/page/24/">Next &raquo;</a>
@@ -1179,7 +1183,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">cs</a>
+                <a href="javascript:void(0)" class="js-tag color2">erlang</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">elixir</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1203,11 +1211,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">erlang</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">elixir</a>
+                <a href="javascript:void(0)" class="js-tag color3">cs</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1227,6 +1231,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">test</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">apple</a>
               </li>
              
@@ -1236,10 +1244,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">payment</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">test</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1275,11 +1279,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">algorithm</a>
+                <a href="javascript:void(0)" class="js-tag color5">ddos</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">ddos</a>
+                <a href="javascript:void(0)" class="js-tag color5">algorithm</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1291,15 +1295,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">dns</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">devops</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">centos</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">dns</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1331,11 +1335,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">ets</a>
+                <a href="javascript:void(0)" class="js-tag color1">float</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">float</a>
+                <a href="javascript:void(0)" class="js-tag color4">ets</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1395,15 +1399,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">versioncontrol</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">gnu</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">screen</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">versioncontrol</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1451,15 +1455,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">log</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">locale</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">terminal</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">log</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1535,11 +1539,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">python</a>
+                <a href="javascript:void(0)" class="js-tag color4">protocol</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">protocol</a>
+                <a href="javascript:void(0)" class="js-tag color2">python</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1567,11 +1571,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">ubuntu</a>
+                <a href="javascript:void(0)" class="js-tag color5">operation</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">wifi</a>
+                <a href="javascript:void(0)" class="js-tag color2">ubuntu</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1580,6 +1584,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">pam</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">wifi</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1596,10 +1604,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">xcode</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">operation</a>
               </li>
             
             <div class="clearfix"></div>

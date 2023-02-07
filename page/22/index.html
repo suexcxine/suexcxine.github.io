@@ -166,6 +166,118 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-TLCL_notes_16" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/09/07/TLCL_notes_16/">&lt;&lt;The Linux Command Line&gt;&gt; 第十六章笔记 存储媒介</a>
+    </h1>
+  
+
+        
+        <a href="/2015/09/07/TLCL_notes_16/" class="archive-article-date">
+  	<time datetime="2015-09-07T12:00:16.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2015-09-07</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="etc-fstab"><a href="#etc-fstab" class="headerlink" title="/etc/fstab"></a>/etc/fstab</h2><p>/etc/fstab 的文件可以列出系统启动时要挂载的设备（典型地，硬盘分区）<br>/etc/fstab 字段</p>
+<ul>
+<li>设备名     传统上，这个字段包含与物理设备相关联的设备文件的实际名字，比如说/dev/hda1（第一个 IDE 通道上第一个主设备分区）。然而今天的计算机，有很多热插拔设备（像 USB 驱动设备），许多 现代的 Linux 发行版用一个文本标签和设备相关联。当这个设备连接到系统中时， 这个标签（当储存媒介格式化时，这个标签会被添加到存储媒介中）会被操作系统读取。 那样的话，不管赋给实际物理设备哪个设备文件，这个设备仍然能被系统正确地识别。</li>
+<li>挂载点     设备所连接到的文件系统树的目录。</li>
+<li>文件系统类型     Linux 允许挂载许多文件系统类型。大多数本地的 Linux 文件系统是 ext3， 但是也支持很多其它的，比方说 FAT16 (msdos), FAT32 (vfat)，NTFS (ntfs)，CD-ROM (iso9660)，等等。</li>
+<li>选项     文件系统可以通过各种各样的选项来挂载。有可能，例如，挂载只读的文件系统， 或者挂载阻止执行任何程序的文件系统（一个有用的安全特性，避免删除媒介。）</li>
+<li>频率     一位数字，指定是否和在什么时间用 dump 命令来备份一个文件系统。</li>
+<li>次序     一位数字，指定 fsck 命令按照什么次序来检查文件系统。</li>
+</ul>
+<h2 id="mount-amp-umount"><a href="#mount-amp-umount" class="headerlink" title="mount &amp; umount"></a>mount &amp; umount</h2><p>用来挂载文件系统。执行这个不带参数的命令，将会显示 一系列当前挂载的文件系统</p>
+<p>一个挂载点就是文件系统树中的一个目录。它没有 什么特殊的。<br>它甚至不必是一个空目录，即使你把设备挂载到了一个非空目录上，你也不能看到 这个目录中原来的内容，直到你卸载这个设备。</p>
+<p>我们不能卸载一个设备，如果某个用户或进程正在使用这个设备的话。<br>在这种 情况下，我们把工作目录更改到了 CD-ROW 的挂载点，这个挂载点导致设备忙碌。<br>我们可以很容易地修复这个问题 通过把工作目录改到其它目录而不是这个挂载点。<br>umount很重要,如果不umount可能会丢失缓冲区中的暂未发往设备的数据</p>
+<h2 id="Linux-存储设备名称"><a href="#Linux-存储设备名称" class="headerlink" title="Linux 存储设备名称"></a>Linux 存储设备名称</h2><ul>
+<li>/dev/fd*     软盘驱动器</li>
+<li>/dev/hd*     老系统中的 IDE(PATA)磁盘。典型的主板包含两个 IDE 连接器或者是通道，每个连接器 带有一根缆线，每根缆线上有两个硬盘驱动器连接点。缆线上的第一个驱动器叫做主设备， 第二个叫做从设备。</li>
+<li>设备名称这样安排，/dev/hda 是指第一通道上的主设备名；/dev/hdb 是第一通道上的从设备名；/dev/hdc 是第二通道上的主设备名，等等。末尾的数字表示 硬盘驱动器上的分区。例如，/dev/hda1是指系统中第一硬盘驱动器上的第一个分区，而 /dev/hda 则是指整个硬盘驱动器。</li>
+<li>/dev/lp*     打印机</li>
+<li>/dev/sd<em>     SCSI 磁盘。在最近的 Linux 系统中，内核把所有类似于磁盘的设备（包括 PATA/SATA 硬盘， 闪存，和 USB 存储设备，比如说可移动的音乐播放器和数码相机）看作 SCSI 磁盘。 剩下的命名系统类似于上述所描述的旧的/dev/hd</em>命名方案。</li>
+<li>/dev/sr*     光盘（CD/DVD 读取器和烧写器）</li>
+</ul>
+<h2 id="fsck"><a href="#fsck" class="headerlink" title="fsck"></a>fsck</h2><p>除了检查文件系统的完整性之外，fsck 还能修复受损的文件系统，其成功度依赖于损坏的数量。<br>在类 Unix 的文件系统中，文件恢复的部分被放置于 lost+found 目录里面，位于每个文件 系统的根目录下面。</p>
+<h2 id="dd"><a href="#dd" class="headerlink" title="dd"></a>dd</h2><p>直接把数据移入/出设备<br>把第一个驱动器中的所有数据复制到第二个 驱动器中<br>dd if=/dev/sdb of=/dev/sdc<br>如果只有第一个驱动器被连接到计算机上，我们可以把它的内容复制到一个普通文件中供 以后恢复或复制数据<br>dd if=/dev/sdb of=flash_drive.img<br>警告！这个 dd 命令非常强大。虽然它的名字来自于“数据定义”，有时候也把它叫做“清除磁盘” 因为用户经常会误输入 if 或 of 的规范。在按下回车键之前，要再三检查输入与输出规范！</p>
+<p>通过CD-ROM制作iso<br>dd if=/dev/cdrom of=ubuntu.iso<br>这项技术也适用于 DVD 光盘，但是不能用于音频 CD，因为它们不使用文件系统来存储数据。 对于音频 CD，看一下 cdrdao 命令。</p>
+<h2 id="genisoimage"><a href="#genisoimage" class="headerlink" title="genisoimage"></a>genisoimage</h2><p>创建一个包含目录内容的 iso 映像文件，我们使用 genisoimage 程序。<br>为此，我们首先创建 一个目录，这个目录中包含了要包括到此映像中的所有文件，然后执行这个 genisoimage 命令 来创建映像文件。<br>例如，如果我们已经创建一个叫做~/cd-rom-files 的目录，然后用文件 填充此目录，再通过下面的命令来创建一个叫做 cd-rom.iso 映像文件：<br>genisoimage -o cd-rom.iso -R -J ~/cd-rom-files<br>“-R”选项添加元数据为 Rock Ridge 扩展，这允许使用长文件名和 POSIX 风格的文件权限。<br>同样地，这个”-J”选项使 Joliet 扩展生效，这样 Windows 中就支持长文件名了。</p>
+<h2 id="直接挂载一个-ISO-镜像"><a href="#直接挂载一个-ISO-镜像" class="headerlink" title="直接挂载一个 ISO 镜像"></a>直接挂载一个 ISO 镜像</h2><p>有一个诀窍，我们可以用它来挂载 iso 映像文件，虽然此文件仍然在我们的硬盘中，但我们 当作它已经在光盘中了。<br>添加 “-o loop” 选项来挂载（同时带有必需的 “-t iso9660” 文件系统类型）， 挂载这个映像文件就好像它是一台设备，把它连接到文件系统树上：<br>mkdir /mnt/iso_image<br>mount -t iso9660 -o loop image.iso /mnt/iso_image</p>
+<h2 id="wodim"><a href="#wodim" class="headerlink" title="wodim"></a>wodim</h2><p>清除一张可重写入的 CD-ROM<br>可重写入的 CD-RW 媒介在被重使用之前需要擦除或清空。<br>为此，我们可以用 wodim 命令，指定 设备名称和清空的类型。此 wodim 程序提供了几种清空类型。最小（且最快）的是 “fast” 类型：<br>wodim dev=/dev/cdrw blank=fast</p>
+<p>写入一个映像文件，我们再次使用 wodim 命令，指定光盘设备名称和映像文件名：<br>wodim dev=/dev/cdrw image.iso</p>
+<h2 id="md5sum检验完整性"><a href="#md5sum检验完整性" class="headerlink" title="md5sum检验完整性"></a>md5sum检验完整性</h2><p>一个以 disk-at-once 模式写入的 CD-R，可以用下面的方式检验完整性<br>md5sum /dev/cdrom<br>34e354760f9bb7fbf85c96f6a3f94ece    /dev/cdrom<br>与iso文件的md5sum对比即可</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+<div class="article-tag tagcloud">
+	<i class="icon-price-tags icon"></i>
+	<ul class="article-tag-list">
+		
+		
+		<li class="article-tag-list-item">
+			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">
+				linux</a>
+		</li>
+		
+		
+		
+		<li class="article-tag-list-item">
+			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">
+				bash</a>
+		</li>
+		
+		
+	</ul>
+</div>
+
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2015/09/07/TLCL_notes_16/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-TLCL_notes_15" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1130,105 +1242,6 @@
 
 
   
-    <article id="post-TLCL_notes_6" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/09/07/TLCL_notes_6/">&lt;&lt;The Linux Command Line&gt;&gt; 第六章笔记</a>
-    </h1>
-  
-
-        
-        <a href="/2015/09/07/TLCL_notes_6/" class="archive-article-date">
-  	<time datetime="2015-09-07T12:00:06.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2015-09-07</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="命令"><a href="#命令" class="headerlink" title="命令"></a>命令</h2><p>命令可以是下面四种形式之一：</p>
-<ul>
-<li>一个可执行程序，就像我们所看到的位于目录/usr/bin中的文件一样。属于这一类的程序，可以是二进制文件，诸如用C和C++语言写成的程序, 也可以是由脚本语言写成的程序，比如说shell，python等等。</li>
-<li>一个内建于shell自身的命令。bash 支持若干命令，内部叫做shell内部命令 (builtins)。例如，cd 命令，就是一个shell内部命令。</li>
-<li>一个 shell 函数。这些是小规模的shell脚本，它们混合到环境变量中。在后续的章节里，我们将讨论配置环境变量以及书写shell函数。但是现在，仅仅意识到它们的存在就可以了。</li>
-<li>一个命令别名。我们可以定义自己的命令，建立在其它命令之上。</li>
-</ul>
-<p>type － 显示命令的类型</p>
-<p>which － 显示一个可执行程序的位置</p>
-<p>help － 得到 shell 内部命令的帮助文档</p>
-<p>apropos － 搜索参考手册并显示适当的命令</p>
-<p>whatis － 显示非常简洁的命令说明</p>
-<h2 id="别名"><a href="#别名" class="headerlink" title="别名"></a>别名</h2><p>使用alias之前用type检查打算使用的别名名称是否已被占用<br><figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">alias</span> foo='<span class="keyword">cd</span> <span class="string">/usr</span>; <span class="keyword">ls</span>; <span class="keyword">cd</span> -'</span><br></pre></td></tr></table></figure></p>
-<p>删除别名，使用 unalias 命令，像这样：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">unalias</span> foo</span><br></pre></td></tr></table></figure></p>
-<p>直接输入alias显示所有别名</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-<div class="article-tag tagcloud">
-	<i class="icon-price-tags icon"></i>
-	<ul class="article-tag-list">
-		
-		
-		<li class="article-tag-list-item">
-			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">
-				linux</a>
-		</li>
-		
-		
-		
-		<li class="article-tag-list-item">
-			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">
-				bash</a>
-		</li>
-		
-		
-	</ul>
-</div>
-
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2015/09/07/TLCL_notes_6/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/page/21/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/20/">20</a><a class="page-number" href="/page/21/">21</a><span class="page-number current">22</span><a class="page-number" href="/page/23/">23</a><a class="page-number" href="/page/24/">24</a><span class="space">&hellip;</span><a class="page-number" href="/page/28/">28</a><a class="extend next" rel="next" href="/page/23/">Next &raquo;</a>
@@ -1330,7 +1343,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">cs</a>
+                <a href="javascript:void(0)" class="js-tag color2">erlang</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">elixir</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1354,11 +1371,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">erlang</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">elixir</a>
+                <a href="javascript:void(0)" class="js-tag color3">cs</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1378,6 +1391,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">test</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">apple</a>
               </li>
              
@@ -1387,10 +1404,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">payment</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">test</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1426,11 +1439,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">algorithm</a>
+                <a href="javascript:void(0)" class="js-tag color5">ddos</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">ddos</a>
+                <a href="javascript:void(0)" class="js-tag color5">algorithm</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1442,15 +1455,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">dns</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">devops</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">centos</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">dns</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1482,11 +1495,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">ets</a>
+                <a href="javascript:void(0)" class="js-tag color1">float</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">float</a>
+                <a href="javascript:void(0)" class="js-tag color4">ets</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1546,15 +1559,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">versioncontrol</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">gnu</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">screen</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">versioncontrol</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1602,15 +1615,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">log</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">locale</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">terminal</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">log</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1686,11 +1699,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">python</a>
+                <a href="javascript:void(0)" class="js-tag color4">protocol</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">protocol</a>
+                <a href="javascript:void(0)" class="js-tag color2">python</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1718,11 +1731,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">ubuntu</a>
+                <a href="javascript:void(0)" class="js-tag color5">operation</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">wifi</a>
+                <a href="javascript:void(0)" class="js-tag color2">ubuntu</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1731,6 +1744,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">pam</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">wifi</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1747,10 +1764,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">xcode</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">operation</a>
               </li>
             
             <div class="clearfix"></div>
