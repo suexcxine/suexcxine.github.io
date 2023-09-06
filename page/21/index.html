@@ -166,6 +166,106 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-TLCL_notes_28" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/09/07/TLCL_notes_28/">&lt;&lt;The Linux Command Line&gt;&gt; 第二八章笔记 流程控制：if 分支结构</a>
+    </h1>
+  
+
+        
+        <a href="/2015/09/07/TLCL_notes_28/" class="archive-article-date">
+  	<time datetime="2015-09-07T12:00:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2015-09-07</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="if语法"><a href="#if语法" class="headerlink" title="if语法"></a>if语法</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">x=5</span><br><span class="line"><span class="keyword">if</span> [ <span class="variable">$x</span> = 5 ]; <span class="keyword">then</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"x equals 5."</span></span><br><span class="line"><span class="keyword">elif</span> [ <span class="variable">$x</span> = 3 ]; <span class="keyword">then</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"x equals 3."</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"x does not equal 5."</span></span><br><span class="line"><span class="keyword">fi</span></span><br></pre></td></tr></table></figure>
+<h2 id="退出状态-amp-true-amp-false"><a href="#退出状态-amp-true-amp-false" class="headerlink" title="退出状态 &amp; true &amp; false"></a>退出状态 &amp; true &amp; false</h2><p>当命令执行完毕后，命令（包括我们编写的脚本和 shell 函数）会给系统发送一个值，叫做退出状态。<br>这个值是一个 0 到 255 之间的整数，说明命令执行成功或是失败。<br>按照惯例，一个零值说明成功，其它所有值说明失败。 Shell 提供了一个参数，我们可以用echo $?检查退出状态。<br>shell 提供了两个极其简单的内部命令，它们不做任何事情，除了以一个零或1退出状态来终止执行。<br>true 命令总是执行成功，而 false 命令总是执行失败：<br>如果 if 之后跟随一系列命令，则将计算列表中的最后一个命令：</p>
+<h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><p>到目前为止，经常与 if 一块使用的命令是 test。<br>这个 test 命令执行各种各样的检查与比较。 它有两种等价模式：<br>test expression<br>比较流行的格式是：<br>[ expression ]<br>例:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"><span class="comment"># test-file: Evaluate the status of a file</span></span><br><span class="line">FILE=~/.bashrc</span><br><span class="line"><span class="keyword">if</span> [ -e <span class="string">"<span class="variable">$FILE</span>"</span> ]; <span class="keyword">then</span></span><br><span class="line">    <span class="keyword">if</span> [ -f <span class="string">"<span class="variable">$FILE</span>"</span> ]; <span class="keyword">then</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">"<span class="variable">$FILE</span> is a regular file."</span></span><br><span class="line">    <span class="keyword">fi</span></span><br><span class="line">    <span class="keyword">if</span> [ -d <span class="string">"<span class="variable">$FILE</span>"</span> ]; <span class="keyword">then</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">"<span class="variable">$FILE</span> is a directory."</span></span><br><span class="line">    <span class="keyword">fi</span></span><br><span class="line">    <span class="keyword">if</span> [ -r <span class="string">"<span class="variable">$FILE</span>"</span> ]; <span class="keyword">then</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">"<span class="variable">$FILE</span> is readable."</span></span><br><span class="line">    <span class="keyword">fi</span></span><br><span class="line">    <span class="keyword">if</span> [ -w <span class="string">"<span class="variable">$FILE</span>"</span> ]; <span class="keyword">then</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">"<span class="variable">$FILE</span> is writable."</span></span><br><span class="line">    <span class="keyword">fi</span></span><br><span class="line">    <span class="keyword">if</span> [ -x <span class="string">"<span class="variable">$FILE</span>"</span> ]; <span class="keyword">then</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">"<span class="variable">$FILE</span> is executable/searchable."</span></span><br><span class="line">    <span class="keyword">fi</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"<span class="variable">$FILE</span> does not exist"</span></span><br><span class="line">    <span class="built_in">exit</span> 1</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"><span class="built_in">exit</span></span><br></pre></td></tr></table></figure></p>
+<p>引号并不是必需的，但这是为了防范空参数。如果$FILE的参数展开 是一个空值，就会导致一个错误（操作符将会被解释为非空的字符串而不是操作符）。用引号把参数引起来就 确保了操作符之后总是跟随着一个字符串，即使字符串为空。<br>exit 命令接受一个单独的，可选的参数，其成为脚本的退出状态。当不传递参数时，退出状态默认为零。</p>
+<h2 id="更现代的测试版本"><a href="#更现代的测试版本" class="headerlink" title="更现代的测试版本"></a>更现代的测试版本</h2><p>目前的 bash 版本包括一个复合命令，作为加强的 test 命令替代物。它使用以下语法：<br>[[ expression ]]</p>
+<p>这个[[ ]]命令非常 相似于 test 命令（它支持所有的表达式），但是增加了一个重要的新的字符串表达式：</p>
+<p>string1 =~ regex<br>如果 string1匹配扩展的正则表达式 regex,其返回值为真</p>
+<p>[[ ]]添加的另一个功能是==操作符支持类型匹配，正如路径名展开所做的那样。</p>
+<h2 id="为整数设计"><a href="#为整数设计" class="headerlink" title="(( )) - 为整数设计"></a>(( )) - 为整数设计</h2><h2 id="结合表达式"><a href="#结合表达式" class="headerlink" title="结合表达式"></a>结合表达式</h2><p>操作符     测试     [[ ]] and (( ))</p>
+<ul>
+<li>AND        -a     &amp;&amp;</li>
+<li>OR         -o     ||</li>
+<li>NOT         !     !</li>
+</ul>
+<p>一个像这样的命令：<br><figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[me@linuxbox ~]$ [ -d temp ] <span class="params">||</span> mkdir temp</span><br></pre></td></tr></table></figure></p>
+<p>会测试目录 temp 是否存在，并且只有测试失败之后，才会创建这个目录。</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+<div class="article-tag tagcloud">
+	<i class="icon-price-tags icon"></i>
+	<ul class="article-tag-list">
+		
+		
+		<li class="article-tag-list-item">
+			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">
+				linux</a>
+		</li>
+		
+		
+		
+		<li class="article-tag-list-item">
+			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">
+				bash</a>
+		</li>
+		
+		
+	</ul>
+</div>
+
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2015/09/07/TLCL_notes_28/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-TLCL_notes_27" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -959,96 +1059,6 @@
 
 
   
-    <article id="post-TLCL_notes_18" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/09/07/TLCL_notes_18/">&lt;&lt;The Linux Command Line&gt;&gt; 第十八章笔记 查找文件</a>
-    </h1>
-  
-
-        
-        <a href="/2015/09/07/TLCL_notes_18/" class="archive-article-date">
-  	<time datetime="2015-09-07T12:00:18.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2015-09-07</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="locate-amp-updatedb"><a href="#locate-amp-updatedb" class="headerlink" title="locate &amp; updatedb"></a>locate &amp; updatedb</h2><p>数据库由另一个叫做 updatedb 的程序创建</p>
-<h2 id="find"><a href="#find" class="headerlink" title="find"></a>find</h2><p>添加测试条件-type d 限制了只搜索目录。-type f 限制只搜索文件, -size 指定大小<br><figure class="highlight sqf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">find</span> ~ -<span class="built_in">type</span> f -<span class="built_in">name</span> <span class="string">"\*.JPG"</span> -<span class="built_in">size</span> +<span class="number">1</span>M | wc -l</span><br></pre></td></tr></table></figure></p>
-<p>find命令的预定义操作例如-delete,一定要放到末尾,否则可能会有灾难性后果,因为可能测试(如-type, -name)还没做就删除了<br>-ok参数可以在执行前询问用户是否确认<br><figure class="highlight sqf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">find</span> ~ -<span class="built_in">type</span> f -<span class="built_in">name</span> <span class="string">'foo*'</span> -<span class="built_in">exec</span> ls -l <span class="string">'&#123;&#125;'</span> +</span><br></pre></td></tr></table></figure></p>
-<h3 id="处理古怪的文件名"><a href="#处理古怪的文件名" class="headerlink" title="处理古怪的文件名"></a>处理古怪的文件名</h3><p>类 Unix 的系统允许在文件名中嵌入空格（甚至换行符）。<br>这就给一些程序，如为其它 程序构建参数列表的 xargs 程序，造成了问题。<br>一个嵌入的空格会被看作是一个界定符，生成的 命令会把每个空格分离的单词解释为单独的参数。<br>为了解决这个问题，find 命令和 xarg 程序 允许可选择的使用一个 null 字符作为参数分隔符。<br>一个 null 字符被定义在 ASCII 码中，由数字 零来表示（相反的，例如，空格字符在 ASCII 码中由数字32表示）。<br>find 命令提供的 -print0 行为， 则会产生由 null 字符分离的输出，并且 xargs 命令有一个 –null 选项，这个选项会接受由 null 字符 分离的输入。<br>这里有一个例子：<br><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">find</span> <span class="regexp">~ -iname</span> ‘<span class="regexp">*.jpg</span>’ -print0 | xargs –null ls -l</span><br></pre></td></tr></table></figure></p>
-<p>使用这项技术，我们可以保证所有文件，甚至那些文件名中包含空格的文件，都能被正确地处理。</p>
-<h2 id="stat命令"><a href="#stat命令" class="headerlink" title="stat命令"></a>stat命令</h2><p>显示文件详细信息</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-<div class="article-tag tagcloud">
-	<i class="icon-price-tags icon"></i>
-	<ul class="article-tag-list">
-		
-		
-		<li class="article-tag-list-item">
-			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">
-				linux</a>
-		</li>
-		
-		
-		
-		<li class="article-tag-list-item">
-			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">
-				bash</a>
-		</li>
-		
-		
-	</ul>
-</div>
-
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2015/09/07/TLCL_notes_18/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/page/20/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/19/">19</a><a class="page-number" href="/page/20/">20</a><span class="page-number current">21</span><a class="page-number" href="/page/22/">22</a><a class="page-number" href="/page/23/">23</a><span class="space">&hellip;</span><a class="page-number" href="/page/28/">28</a><a class="extend next" rel="next" href="/page/22/">Next &raquo;</a>
@@ -1162,6 +1172,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">websocket</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">chrome</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">mysql</a>
               </li>
              
@@ -1171,14 +1189,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">cloud</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">websocket</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">chrome</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1198,10 +1208,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">test</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">apple</a>
               </li>
              
@@ -1211,6 +1217,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">payment</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">test</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1226,10 +1236,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">web</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">encoding</a>
               </li>
              
@@ -1239,6 +1245,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">olap</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">web</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1290,14 +1300,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">distribution</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">concurrency</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">mix</a>
               </li>
              
@@ -1307,6 +1309,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">distillery</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">distribution</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">concurrency</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1394,11 +1404,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">hex</a>
+                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
+                <a href="javascript:void(0)" class="js-tag color4">hex</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1410,19 +1420,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">compiler</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">json</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">java</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">jinterface</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">compiler</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">json</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1442,10 +1452,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">install</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">mac</a>
               </li>
              
@@ -1459,6 +1465,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">emoji</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">install</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1482,14 +1492,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">env</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">proxy</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">odbc</a>
               </li>
              
@@ -1506,7 +1508,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">protocol</a>
+                <a href="javascript:void(0)" class="js-tag color4">env</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">proxy</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1519,6 +1525,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">cowboy</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">protocol</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1554,10 +1564,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">charsets</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">wifi</a>
               </li>
              
@@ -1570,11 +1576,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">sns</a>
+                <a href="javascript:void(0)" class="js-tag color4">charsets</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">ftp</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">sns</a>
               </li>
              
               <li class="article-tag-list-item">
