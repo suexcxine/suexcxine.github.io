@@ -166,6 +166,120 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-oo_sucks" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/10/13/oo_sucks/">关于面向对象编程</a>
+    </h1>
+  
+
+        
+        <a href="/2015/10/13/oo_sucks/" class="archive-article-date">
+  	<time datetime="2015-10-12T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2015-10-13</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="OOP的设计目标-实现手段和目标是否达成"><a href="#OOP的设计目标-实现手段和目标是否达成" class="headerlink" title="OOP的设计目标,实现手段和目标是否达成"></a>OOP的设计目标,实现手段和目标是否达成</h2><p>OOP最重要的目标，是OCP，即「开闭原则」,对扩展开放,对修改关闭,<br>但是<strong><em>OCP不是免费的</em></strong>,教条主义泛滥,在不需要的地方使用OCP仅仅是浪费</p>
+<p>继承的意义并不很大，甚至常常是有害的。因为它使得子类与基类出现强耦合。<br>接口规范带来的归一化的效果才是有用的, 但是<strong><em>归一化本身并非必须是OOP</em></strong><br>Golang没有继承, smalltalk不用继承和接口也可以归一化, unix的泛文件概念也是归一化</p>
+<h3 id="业界存在太多误导和误解"><a href="#业界存在太多误导和误解" class="headerlink" title="业界存在太多误导和误解"></a>业界存在太多误导和误解</h3><p>一切皆对象实质上是在鼓励堆砌毫无意义的繁杂类设计,例如教条化的<strong><em>设计模式驱动编程</em></strong><br>为了设计模式而设计模式并无意义<br>用面向对象语言写程序，和一个程序的设计是面向对象的，两者是八杆子打不着的两码事。<br>纯C写的linux kernel事实上比c++/java之类语言搞出来的大多数项目更加面向对象</p>
+<h3 id="OOP提供的所谓「保证旧代码不需要被修改」-其实也保证不了-是否有意义"><a href="#OOP提供的所谓「保证旧代码不需要被修改」-其实也保证不了-是否有意义" class="headerlink" title="OOP提供的所谓「保证旧代码不需要被修改」(其实也保证不了)是否有意义"></a>OOP提供的所谓「保证旧代码不需要被修改」(其实也保证不了)是否有意义</h3><p>面向对象编程有很多用途，很多用法，但是我们会发现「设计模式驱动」成为了非常有代表性的流派。<br>有时我们会疑惑，为什么会有设计模式，为什么面向对象编程会出现如此恐怖的这么复杂的类关系。</p>
+<p>可能这是为了满足「增量式开发」。它假定几个前提：<br>1，将一份代码测试调试稳定所需要花的时间，远远大于撰写代码的时间。<br>2，已经通过测试的旧代码永远不修改，只对新代码进行新增，是最可靠的开发方式。<br>3，你经常需要重用没有源代码的库，并且扩展和修改其功能。</p>
+<p>很多面向对象的设计，其实是为了满足一个很基本的目的：不修改旧代码，只新增代码。<br>代码只增不改，所以才会出现「继承」这种东西。因为你不需要原有的源代码也不需要修改原有的类，而是派生一个类增加新的方法。<br>「继承」的本来目的看起来就是为了解决这个问题。</p>
+<p>因此，很多类层次关系的设计，不是为了更高的效率，不是为了代码看起来更清晰，而是为了「保证旧代码不需要被修改」这个目的。</p>
+<p>不过，这是不是事实呢？在某些公司，这是事实，在很多公司，以上的假定不是事实。<br>1，很多代码并没有经过长时间的充分的测试，因而没有必要为了不浪费原有测试资源而拒绝修改旧代码。<br>2，修改旧代码在大多数公司是不可避免的。<br>3，很多时候我们提倡读懂库的源代码，而不会盲目使用无源代码的库。<br>4，现在流行的敏捷开发模型中宣传要拥抱变化。在敏捷模型中，测试案例是被固化的，而代码与架构都可以经常被修改，<br>换句话说，<strong><em>不修改旧代码，以及通过类层次关系设计系统架构，这些特性对敏捷来说都不重要，甚至背道而驰</em></strong>。</p>
+<h3 id="绑定数据和函数是否利于代码重用"><a href="#绑定数据和函数是否利于代码重用" class="headerlink" title="绑定数据和函数是否利于代码重用"></a>绑定数据和函数是否利于代码重用</h3><p>面向对象得目标是大规模重用代码。<br>面向对象的手段是绑定数据和函数。<br>面向对象的哲学含义是给客体下定义来完成形式化抽象。 目的说白了就是为了尽可能重用代码来减少程序员工作。<br>但是矛盾的地方在于，真实世界中的客体的定义随着主体的看法而改变，换句话，不存在固定的形式化抽象，一切都要符合环境（上下文）。<br>最简单的例子就是，中文词的含义天天变，只有根据环境知识才能知道是什么含义。<br>而代码是为了具体问题而出现的，所以不存在通用抽象，也就不存在可以无限重用的定义和逻辑。</p>
+<p>更加合理的设计理念应该还是 提供机制而不限制策略<br>所以从这一点上来看，提供一个<strong><em>常用的函数库要比精心设计复杂的对象模型要好的多</em></strong>。</p>
+<p>更进一步，理想状态是全世界共享一种函数式语言，共享一份源代码，并对问题分类，<br>将所有函数按照问题进行整理，只有这样感觉才能彻底避免重新发明轮子。</p>
+<h3 id="OOP鼻祖Smalltalk与C-JAVA的不同"><a href="#OOP鼻祖Smalltalk与C-JAVA的不同" class="headerlink" title="OOP鼻祖Smalltalk与C/JAVA的不同"></a>OOP鼻祖Smalltalk与C/JAVA的不同</h3><p>在 Smalltalk 里的“对象”实际上是一种高级的动态模块。<br>一个 Smalltalk 程序，是由一系列这样的高级动态模块构成的。<br>你可以在程序运行时（注意是运行时，而不是编译时）动态的修改、替换任意模块，而无需停止整个程序。</p>
+<p>之所以在模块二字前加上“高级”和“动态”，实际上是对比其他非面向对象语言而言的。</p>
+<p>例如 C 语言中你可以把 printf() 理解为一个控制台输出模块。<br>但是这样的模块，用起来容易，却不太灵活——如果你有实际的编程经验肯定能有所体会。<br>例如，你能够在程序运行的过程中，动态的替换掉 printf() 这个模块吗？<br>你能够动态的改变 printf() 这个模块的代码吗？<br>你能够动态的获取 printf() 这个模块的基本信息吗（参数列表，返回值甚至代码）？</p>
+<p>别说，你还真的能，因为你可以通过各种技巧间接的实现这一点，但是这这是你的发明创造，而不是 C 语言本身的特性。<br>所以我们可以知道，C 语言对模块的支持仅仅止步于函数级别。</p>
+<p>Smalltalk 的亮点就在于，它在语言层面引入了一种称为“对象”的高级动态模块系统。<br>一个 Smalltalk 程序由一系列的高级动态模块构成，每个模块之间通过通信进行协同。</p>
+<p>也就是说，Smalltalk 所秉承的面向对象思想使得整个软件系统的可分割性和可组合性迈上了一个新台阶。这是面向对象思想的光辉所在。</p>
+<p>现在我们回过头来看看 C++ 和 Java 中的面向对象。</p>
+<p>事实上，C++ 和 Java 在实现面向对象的路途上遇到的第一道坎是他们本身都是静态类型的语言。<br>也就是说，这类语言的设计信条是一切结构皆须预先描述，因为编译器要检查。<br>于是没什么悬念的的就走上了 Class-based OOP 这条路（另一条路是 Prototype-based OOP）。</p>
+<p>Class-based OOP 的一个特征是<strong><em>对象的结构需要预先声明</em></strong>，并且在运行过程中不允许改变——<br>C++ 和 Java 的作者有一千个理由这么干，最基本的原因就是性能考虑——但这样做的代价首先就削弱了系统的动态性。</p>
+<p>更糟糕的是，C++ 和 Java 中，连<strong><em>对象的可替换性也需要预先声明</em></strong>。<br>我这么说一部分朋友可能没办法马上反应过来。其实就是说，在 Smalltalk 中，我们可以用任何一个对象随意替换掉另外一个，只要他们对外界而言行为一致，那么系统依然可以正常运行，<br>这一点，在大家更熟悉的 Ruby、Javascript 等语言中，被称为 Duck-Type 概念。</p>
+<p>在 C++ 和 Java 中，你不能随意找个对象 x 来替换掉另外一个对象 y。即使他们拥有完全相同的行为也不行。<br>因为 C++ 和 Java 是 Class-based OOP 所以连可替换性也需要预先声明！这种声明方式就是让无数人潸然泪下的——继承！<br>即使一个对象 x 和 y 的行为是完全一样的，你也不能用 x 去替换 y。允许你替换的唯一前提是，x 被声明为继承自 y 的。<br>简单的来说，“继承”是一人分饰两角的典型——它既作为代码复用的一种手段，同时又成为了可替换性的一种声明。<br>这种设计非常失败，难以使用到直接导致了面向对象在 C++ 和 Java 中成为了一个阉割后的太监。</p>
+<p>为了弥补继承的这种缺陷，于是引入了 Interface （只表明可替换性，不复用代码），<br>但这也改变不了什么了。毕竟 Interface 竟然也开始互相玩起了继承的游戏……</p>
+<h3 id="OO的弊端就是：设计抽象和封装的时间远远超过你解决问题的时间。"><a href="#OO的弊端就是：设计抽象和封装的时间远远超过你解决问题的时间。" class="headerlink" title="OO的弊端就是：设计抽象和封装的时间远远超过你解决问题的时间。"></a>OO的弊端就是：设计抽象和封装的时间远远超过你解决问题的时间。</h3><p>软件工程里对一个大型项目而言这样其实已经<strong><em>背离了设计规则，不是将一个大问题进行分解，而是将它放到一个更大的一个问题里</em></strong>，<br>你会发现OO就是不断地重构，重构，你会重新思考接口，重新改进设计模式，等等，一切，而却忽略了真正解决问题。<br>我曾一度觉得OO是大师们的智慧结晶，其实可以说这些是哲学的产物吧。等你发现，早已深陷其中。<br>还是要从实际解决问题入手！ </p>
+<h3 id="静态的OO结构难以应对变化"><a href="#静态的OO结构难以应对变化" class="headerlink" title="静态的OO结构难以应对变化"></a>静态的OO结构难以应对变化</h3><p>我举一个具体的例子。假如一个组织的组织架构是静态的，那么OO方法足以描述这个组织，也可以在架构和人员不变的前提下定义好正常的公文流转等业务流程。<br>只要组织里的人、职责是固定的，那么用OO就足以按照组织机构树和职责进行分而治之。</p>
+<p>但是，世界上不存在这么完美的事情。组织里某个人可能要请假造成公文无法流转，有人可能要临时身兼数职、有些公文突然会要求会签...<br>你马上会发现，看起来严谨的组织机构树和职责定义面对这么多的“临时状况”毫无应变的灵活性，而“临时状况”从上线第一天起就没有停过。<br>显然，OO的方法学在面对不断变化且超出设计预期的“状态”时非常非常力不从心。<br>（在OO的年代，我也尝试通过定义复杂状态机的方法来应对这个问题，但是同样地，设计阶段枚举得好好的状态，到了真实业务运转时完全走了样。）</p>
+<p>所以，<strong><em>对于不断变化的“状态”我们必须引入新的“分而治之”的方法</em></strong>，<br>这就是为什么函数式编程(Functional Reactive Programming)、流编程（Unix或者Node.JS中的 Stream）现在越来越多地被应用在设计中的原因。</p>
+<p>描述静态关系时，OO仍然是有用的，但是在应对复杂变化且相互变化的状态时，只有函数式编程方式可以让状态之间松耦。</p>
+<h2 id="性能"><a href="#性能" class="headerlink" title="性能"></a>性能</h2><p>由于内存墙,内存存取成为现代计算机性能的重要瓶颈,<br>现时的OOP编程有可能不缓存友好（cache friendly），导致有时候并不能发挥硬件最佳性能<br>过度封装,多态,OOP的数据布局都会增大cache miss的可能性</p>
+<h2 id="Joe-Armstrong的观点"><a href="#Joe-Armstrong的观点" class="headerlink" title="Joe Armstrong的观点"></a>Joe Armstrong的观点</h2><ol>
+<li>数据结构和函数不应该被绑定到一起.这是最根本的错误,函数和数据完全不同,函数将输入转为输出,数据结构就是数据的结构,绑定到一起限制了它们的使用.</li>
+<li>什么都必须是对象.连Time都必须是一个对象,Erlang里Time并不是对象.</li>
+<li>数据类型定义散落在各个类里.Erlang或C可以在一个头文件里定义数据类型</li>
+<li>对象有私有状态.状态是一切罪恶的根源,OOP不是直面状态尽可能将状态带来的影响减到最小,而是隐藏状态</li>
+</ol>
+<p>OOP流行只是因为炒作,因为它可以创造一个新的软件工业,赚更多的钱</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><p><a href="http://www.zhihu.com/question/20275578" target="_blank" rel="noopener">http://www.zhihu.com/question/20275578</a><br><a href="http://harmful.cat-v.org/software/OO_programming/why_oo_sucks" target="_blank" rel="noopener">http://harmful.cat-v.org/software/OO_programming/why_oo_sucks</a></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+<div class="article-tag tagcloud">
+	<i class="icon-price-tags icon"></i>
+	<ul class="article-tag-list">
+		
+		
+		<li class="article-tag-list-item">
+			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">
+				programming</a>
+		</li>
+		
+		
+	</ul>
+</div>
+
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2015/10/13/oo_sucks/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-sort" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1005,166 +1119,6 @@ true
 
 
   
-    <article id="post-erlang_unicode" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/09/08/erlang_unicode/">erlang unicode</a>
-    </h1>
-  
-
-        
-        <a href="/2015/09/08/erlang_unicode/" class="archive-article-date">
-  	<time datetime="2015-09-07T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2015-09-08</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="LANG-amp-LC-CTYPE环境变量和encoding"><a href="#LANG-amp-LC-CTYPE环境变量和encoding" class="headerlink" title="LANG &amp; LC_CTYPE环境变量和encoding"></a>LANG &amp; LC_CTYPE环境变量和encoding</h2><p>影响Erlang Shell,告诉终端程序是否要处理unicode</p>
-<blockquote>
-<p>\$ echo $LC_CTYPE</p>
-<p>\$ echo $LANG<br>zh_CN.UTF-8</p>
-</blockquote>
-<p>如,下例中encoding是unicode:</p>
-<blockquote>
-<p>Erlang R15B (erts-5.9) [source] [smp:4:4] [async-threads:0] [hipe] [kernel-poll:false]</p>
-<p>Eshell V5.9  (abort with ^G)<br>1&gt; io:getopts().<br>[{expand_fun,#Fun<group.0.33302583>},<br> {echo,true},<br> {binary,false},<br> {encoding,unicode}]</group.0.33302583></p>
-</blockquote>
-<p>改成latin1看看,显示都成乱码了:</p>
-<blockquote>
-<p>LC_CTYPE=en_US.ISO-8859-1 /usr/local/bin/erl<br>Erlang R15B (erts-5.9) [source] [smp:4:4] [async-threads:0] [hipe] [kernel-poll:false]</p>
-<p>Eshell V5.9  (abort with ^G)<br>1&gt; io:getopts().<br>[{expand_fun,#Fun<group.0.33302583>},<br> {echo,true},<br> {binary,false},<br> {encoding,latin1}]<br>2&gt; &quot;\346\210\221\344\273\254&quot;.<br>[230,136,145,228,187,172]<br>3&gt; io:format(&quot;~ts&quot;,[lists:seq(20204,20220)]).<br>\x{4EEC}\x{4EED}\x{4EEE}\x{4EEF}\x{4EF0}\x{4EF1}\x{4EF2}\x{4EF3}\x{4EF4}\x{4EF5}\x{4EF6}\x{4EF7}\x{4EF8}\x{4EF9}\x{4EFA}\x{4EFB}\x{4EFC}ok<br>4&gt; io:setopts([{encoding,unicode}]).<br>ok<br>5&gt; &quot;我们&quot;.<br>[25105,20204]</group.0.33302583></p>
-</blockquote>
-<p>输入&quot;我们&quot;变成了&quot;\346\210\221\344\273\254&quot;</p>
-<h2 id="erl的参数-pc"><a href="#erl的参数-pc" class="headerlink" title="erl的参数: +pc"></a>erl的参数: +pc</h2><p>选择Shell可打印字符的范围,可以是erl +pc latin1 或者  erl +pc unicode, 默认情况下,erl启动参数是latin1<br>io:printable_range/0返回可打印的字符集<br>io_lib:printable_list/1判断一个List是否可打印</p>
-<blockquote>
-<p>$ erl<br>Erlang/OTP 17 [erts-6.2] [source] [smp:4:4] [async-threads:10] [hipe] [kernel-poll:false]</p>
-<p>Eshell V6.2  (abort with ^G)<br>1&gt; io:printable_range().<br>latin1<br>2&gt; io_lib:printable_list([25105]).<br>false<br>3&gt; unicode:characters_to_binary(&quot;我&quot;).<br>&lt;<230,136,145>&gt;<br>4&gt; file:write_file(&quot;test&quot;, [unicode:characters_to_binary(&quot;我&quot;)]).<br>ok<br>5&gt; file:read_file(&quot;test&quot;).<br>{ok,&lt;<230,136,145>&gt;}<br>6&gt; file:write_file(&quot;test&quot;, [io_lib:format(&quot;~w.~n&quot;, [unicode:characters_to_binary(&quot;我&quot;)])]).<br>ok<br>7&gt; file:consult(&quot;test&quot;).<br>{ok,[&lt;<230,136,145>&gt;]}</230,136,145></230,136,145></230,136,145></p>
-<p>17.0 +pc unicode情况下,unicode字符串可以正常显示如下<br>$ erl +pc unicode<br>Erlang/OTP 17 [erts-6.2] [source] [smp:4:4] [async-threads:10] [hipe] [kernel-poll:false]</p>
-<p>Eshell V6.2  (abort with ^G)<br>1&gt; io:printable_range().<br>unicode<br>2&gt; io_lib:printable_list([25105]).<br>true<br>3&gt; &lt;<230,136,145,228,187,172,229,173,166,228,185,160,69,114,108,97,110,103>&gt;.<br>&lt;&lt;&quot;我们学习Erlang&quot;/utf8&gt;&gt;<br>4&gt; unicode:characters_to_binary(&quot;我&quot;).<br>&lt;&lt;&quot;我&quot;/utf8&gt;&gt;<br>5&gt; file:write_file(&quot;test&quot;, [unicode:characters_to_binary(&quot;我&quot;)]).<br>ok<br>6&gt; file:read_file(&quot;test&quot;).<br>{ok,&lt;&lt;&quot;我&quot;/utf8&gt;&gt;}<br>7&gt; file:write_file(&quot;test&quot;, [io_lib:format(&quot;~w.~n&quot;, [unicode:characters_to_binary(&quot;我&quot;)])]).<br>ok<br>8&gt; file:consult(&quot;test&quot;).<br>{ok,[&lt;&lt;&quot;我&quot;/utf8&gt;&gt;]}</230,136,145,228,187,172,229,173,166,228,185,160,69,114,108,97,110,103></p>
-</blockquote>
-<h2 id="epp-default-encoding-0"><a href="#epp-default-encoding-0" class="headerlink" title="epp:default_encoding/0"></a>epp:default_encoding/0</h2><p>返回的是当前OTP版本使用的默认编码方式.R16B是latin1, 17.0是utf8.</p>
-<blockquote>
-<p>$ erl<br>Erlang/OTP 17 [erts-6.2] [source] [smp:4:4] [async-threads:10] [hipe] [kernel-poll:false]</p>
-<p>Eshell V6.2  (abort with ^G)<br>1&gt; epp:default_encoding().<br>utf8</p>
-</blockquote>
-<p>文件注释头可以指定编译器使用某种编码来解析,如<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">%</span><span class="bash">% -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="meta">%</span><span class="bash">% -*- coding: latin-1 -*-</span></span><br></pre></td></tr></table></figure></p>
-<p>例如:<br><figure class="highlight erlang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">%% -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="keyword">-module</span><span class="params">(test)</span>.</span><br><span class="line"><span class="keyword">-export</span><span class="params">([test/<span class="number">0</span>])</span>.</span><br><span class="line"><span class="function"><span class="title">test</span><span class="params">()</span> -&gt;</span></span><br><span class="line">        [<span class="string">"我"</span>, &lt;&lt;<span class="string">"我"</span>/utf8&gt;&gt;].</span><br></pre></td></tr></table></figure></p>
-<blockquote>
-<p>$ erl<br>Erlang/OTP 17 [erts-6.2] [source] [smp:4:4] [async-threads:10] [hipe] [kernel-poll:false]</p>
-<p>Eshell V6.2  (abort with ^G)<br>1&gt; test:test().<br>[[25105],&lt;<230,136,145>&gt;]</230,136,145></p>
-</blockquote>
-<h2 id="文件编码带来的差异"><a href="#文件编码带来的差异" class="headerlink" title="文件编码带来的差异"></a>文件编码带来的差异</h2><p>R15B, erlang一律以latin-1编译代码,遇到中文都编译成这种,<br>如test模块的函数:<br><figure class="highlight erlang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="title">data</span><span class="params">()</span> -&gt;</span> <span class="string">"中国人"</span>.</span><br><span class="line"><span class="function"><span class="title">data2</span><span class="params">()</span> -&gt;</span> &lt;&lt;<span class="string">"中国人"</span>&gt;&gt;.</span><br></pre></td></tr></table></figure></p>
-<p>运行时:</p>
-<blockquote>
-<p>1&gt; test:data().<br>[228,184,173,229,155,189,228,186,186]<br>2&gt; test:data2().<br>&lt;<228,184,173,229,155,189,228,186,186>&gt;</228,184,173,229,155,189,228,186,186></p>
-</blockquote>
-<p>而erlang 17中,erlang一律默认以unicode编译代码(也可以在文件头指定),遇到中文都编译成这种,<br>如test模块的函数:<br><figure class="highlight erlang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="title">data</span><span class="params">()</span> -&gt;</span> <span class="string">"中国人"</span>.</span><br><span class="line"><span class="function"><span class="title">data2</span><span class="params">()</span> -&gt;</span> &lt;&lt;<span class="string">"中国人"</span>/utf8&gt;&gt;.  (注意这里需要加utf8类型)</span><br></pre></td></tr></table></figure></p>
-<p>运行时:</p>
-<blockquote>
-<p>1&gt; test:data().<br>[20013,22269,20154]<br>2&gt; test:data2().<br>&lt;<228,184,173,229,155,189,228,186,186>&gt;</228,184,173,229,155,189,228,186,186></p>
-</blockquote>
-<p>而这里如果data2()没加utf8类型说明,即写成了这样<br><figure class="highlight erlang"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="title">data2</span><span class="params">()</span> -&gt;</span> &lt;&lt;<span class="string">"中国人"</span>&gt;&gt;.</span><br></pre></td></tr></table></figure></p>
-<p>则会有问题:</p>
-<blockquote>
-<p>1&gt; test:data2().<br>&lt;&lt;&quot;-ýº&quot;&gt;&gt;<br>2&gt; io:format(&quot;~w&quot;, [test:data2()]).<br>&lt;<45,253,186>&gt;ok</45,253,186></p>
-</blockquote>
-<p>或者写成了这样<br><figure class="highlight erlang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">%% -*- coding: latin-1 -*-</span></span><br><span class="line"><span class="function"><span class="title">data2</span><span class="params">()</span> -&gt;</span> &lt;&lt;<span class="string">"中国人"</span>/utf8&gt;&gt;.</span><br></pre></td></tr></table></figure></p>
-<p>即utf8类型说明与latin-1文件编码说明冲突,则也会有问题:</p>
-<blockquote>
-<p>1&gt; test:data2().<br>&lt;<195,164,194,184,194,173,195,165,194,155,194,189,195,164, 194,186,194,186="">&gt;<br>2&gt; io:format(&quot;~ts&quot;, [v(2)]).<br>ä¸­å½äººok<br>3&gt; io:format(&quot;~s&quot;, [v(2)]).<br>Ã¤Â¸Â­Ã¥ÂÂ½Ã¤ÂºÂºok</195,164,194,184,194,173,195,165,194,155,194,189,195,164,></p>
-</blockquote>
-<p>所以以下这段问题代码<br><figure class="highlight erlang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">-module</span><span class="params">(t)</span>.</span><br><span class="line"><span class="keyword">-export</span><span class="params">([test/<span class="number">0</span>])</span>.</span><br><span class="line"><span class="function"><span class="title">test</span><span class="params">()</span> -&gt;</span></span><br><span class="line">    [<span class="string">"我"</span>, &lt;&lt;<span class="string">"我"</span>&gt;&gt;].</span><br></pre></td></tr></table></figure></p>
-<p>R17编译后的运行结果为：</p>
-<blockquote>
-<p>1&gt; t:test().<br>[[25105],&lt;<17>&gt;]</17></p>
-</blockquote>
-<p>字符串是字符串,binary是binary,<br>字符串是这样的[25105, 25105, 97]<br>binary是这样的, &lt;<230,136,145,230,136,145,97>&gt;, 二进制这里面一个数字肯定是1个字节的, 要不不叫binary了</230,136,145,230,136,145,97></p>
-<p>&lt;&lt;&quot;我&quot;&gt;&gt;相当于&lt;<25105>&gt;,而二进制一个数字需要是1个字节,所以截断变成&lt;<17>&gt;<br>而加上utf8描述符后就不会被截断</17></25105></p>
-<blockquote>
-<p>&lt;&lt;&quot;我&quot;/utf8&gt;&gt;.<br>&lt;<230,136,145>&gt;</230,136,145></p>
-</blockquote>
-<p>所以这里把代码改为<br><figure class="highlight erlang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">-module</span><span class="params">(t)</span>.</span><br><span class="line"><span class="keyword">-export</span><span class="params">([test/<span class="number">0</span>])</span>.</span><br><span class="line"><span class="function"><span class="title">test</span><span class="params">()</span> -&gt;</span></span><br><span class="line">    [<span class="string">"我"</span>, &lt;&lt;<span class="string">"我"</span>/utf8&gt;&gt;].</span><br></pre></td></tr></table></figure></p>
-<p>即可</p>
-<h2 id="文件名解析"><a href="#文件名解析" class="headerlink" title="文件名解析"></a>文件名解析</h2><p>erl启动的时候添加不同的flag可以控制解析文件名的方式: </p>
-<ul>
-<li>+fnl 按照latin去解析文件名 </li>
-<li>+fnu 按照unicode解析文件名 </li>
-<li>+fna 是根据环境变量(LC_CTYPE)自动选择,这也是目前的系统默认值.</li>
-</ul>
-<p>可以使用file:native_name_encoding检查此参数.</p>
-<blockquote>
-<p>$ erl<br>Erlang/OTP 17 [erts-6.2] [source] [smp:4:4] [async-threads:10] [hipe] [kernel-poll:false]</p>
-<p>Eshell V6.2  (abort with ^G)<br>1&gt; file:native_name_encoding().<br>utf8<br>2&gt; file:read_file(&quot;test我.erl&quot;).<br>{ok,&lt;<45,109,111,100,117,108,101,40,39,116,101,115,116,230,136,145,39,41,46,32,10,45,101,120,112,111,114,...>&gt;}</45,109,111,100,117,108,101,40,39,116,101,115,116,230,136,145,39,41,46,32,10,45,101,120,112,111,114,...></p>
-</blockquote>
-<p>+fnl后</p>
-<blockquote>
-<p>$ erl +fnl<br>Erlang/OTP 17 [erts-6.2] [source] [smp:4:4] [async-threads:10] [hipe] [kernel-poll:false]</p>
-<p>Eshell V6.2  (abort with ^G)<br>1&gt; file:native_name_encoding().<br>latin1<br>2&gt; file:read_file(&quot;test我.erl&quot;).<br>{error,badarg}</p>
-</blockquote>
-<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><p><a href="http://www.youtube.com/watch?v=M6hPLCA0F-Y" target="_blank" rel="noopener">Erlang User Conference 2013上patrik分享的BRING UNICODE TO ERLANG!视频</a><br><a href="http://www.erlang-factory.com/upload/presentations/847/PatrikEUC2013.pdf" target="_blank" rel="noopener">PDF在这里</a><br><a href="http://www.erlang.org/doc/apps/stdlib/unicode_usage.html" target="_blank" rel="noopener">官方文档</a></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-<div class="article-tag tagcloud">
-	<i class="icon-price-tags icon"></i>
-	<ul class="article-tag-list">
-		
-		
-		<li class="article-tag-list-item">
-			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">
-				erlang</a>
-		</li>
-		
-		
-	</ul>
-</div>
-
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2015/09/08/erlang_unicode/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/page/18/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/17/">17</a><a class="page-number" href="/page/18/">18</a><span class="page-number current">19</span><a class="page-number" href="/page/20/">20</a><a class="page-number" href="/page/21/">21</a><span class="space">&hellip;</span><a class="page-number" href="/page/28/">28</a><a class="extend next" rel="next" href="/page/20/">Next &raquo;</a>
@@ -1266,22 +1220,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">cs</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">db</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">cloud</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">websocket</a>
               </li>
              
@@ -1302,6 +1240,22 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">cs</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">db</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">cloud</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">internet</a>
               </li>
              
@@ -1311,22 +1265,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">gui</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">test</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">aws</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">ec2</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">timezone</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1342,15 +1280,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">aws</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">ec2</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">timezone</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">test</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">encoding</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">olap</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1359,6 +1305,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">computer</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">olap</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1378,15 +1332,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">go</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">redis</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">devops</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">centos</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">go</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1466,22 +1424,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">push</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">firebase</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">android</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">ios</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">firewalld</a>
               </li>
              
@@ -1498,11 +1440,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">versioncontrol</a>
+                <a href="javascript:void(0)" class="js-tag color5">push</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">http</a>
+                <a href="javascript:void(0)" class="js-tag color4">firebase</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">android</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">ios</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">versioncontrol</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1514,6 +1468,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">http</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">hex</a>
               </li>
              
@@ -1522,11 +1480,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">os</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">monitoring</a>
+                <a href="javascript:void(0)" class="js-tag color4">compiler</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1538,11 +1492,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">compiler</a>
+                <a href="javascript:void(0)" class="js-tag color3">os</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">json</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">monitoring</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1555,10 +1513,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">terminal</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">log</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1578,15 +1532,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">log</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">install</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">nat</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">ssh</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1610,14 +1560,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">node</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">npm</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">odbc</a>
               </li>
              
@@ -1626,7 +1568,27 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">nat</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">ssh</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">node</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">npm</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">python</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">protocol</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1635,10 +1597,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">cowboy</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">protocol</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1663,6 +1621,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">cdn</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">operation</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1695,10 +1657,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">xcode</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">operation</a>
               </li>
             
             <div class="clearfix"></div>
