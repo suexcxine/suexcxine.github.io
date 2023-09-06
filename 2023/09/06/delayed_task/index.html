@@ -15,7 +15,7 @@
 <meta property="og:url" content="http://yoursite.com/2023/09/06/delayed_task/index.html">
 <meta property="og:site_name" content="Wind">
 <meta property="og:description" content="延时任务是一个常见的需求。在这篇博客中，我将探讨如何使用 Golang 和 PostgreSQL 来构建一个高效、可靠的延时任务处理系统。">
-<meta property="og:updated_time" content="2023-09-06T08:27:23.307Z">
+<meta property="og:updated_time" content="2023-09-06T08:36:07.786Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="延时任务处理系统：一个 Golang 和 PostgreSQL 的解决方案">
 <meta name="twitter:description" content="延时任务是一个常见的需求。在这篇博客中，我将探讨如何使用 Golang 和 PostgreSQL 来构建一个高效、可靠的延时任务处理系统。">
@@ -200,7 +200,7 @@
 </li>
 <li><p><strong>服务器启动时的任务加载</strong>：为了避免在系统升级或重启时丢失尚未处理的任务，我们在服务器启动时从数据库中检索所有待处理的延时任务。每个检索到的任务都会被分配一个新的 <code>time.NewTimer</code> 计时器，以重新开始计时，确保任务能够在预定的时间得到执行。</p>
 </li>
-<li><p><strong>TimerManager</strong>：尽管我们已经实施了服务器启动时的任务加载机制，但在某些情况下仍然存在任务丢失的风险。例如，在我们进行系统升级时，如果我们首先启动新的节点然后再关闭旧的节点，新节点在启动时可能无法检索到旧节点上的无主任务。此外，如果我们减少了节点的数量，也可能会丢失一些任务。为了解决这些问题，我们设计了 TimerManager。它每隔5分钟会自动从数据库中拉取当前无主的待处理任务，确保这些任务不会因为系统的变化而丢失。</p>
+<li><p><strong>TimerManager</strong>：尽管我们已经实施了服务器启动时的任务加载机制，但在某些情况下仍然存在任务丢失的风险。例如，在我们进行系统升级时，如果我们首先启动新的节点然后再关闭旧的节点，新节点在启动时可能无法检索到旧节点上的无主任务。此外，如果我们减少了节点的数量，也可能会丢失一些任务。为了解决这些问题，我们设计了 TimerManager。它每隔分钟会自动从数据库中拉取当前无主的待处理任务，确保这些任务不会因为系统的变化而丢失。</p>
 </li>
 <li><p><strong>任务执行</strong>：当计时器到达预定的时间点时，它会触发相应的任务执行程序。一旦任务成功执行，我们将从数据库中删除该任务的记录或将其标记为已完成，以保持数据的准确性和一致性。</p>
 </li>
@@ -217,6 +217,9 @@
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"database/sql"</span></span><br><span class="line">	<span class="string">"log"</span></span><br><span class="line">	<span class="string">"time"</span></span><br><span class="line">	_ <span class="string">"github.com/lib/pq"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Task <span class="keyword">struct</span> &#123;</span><br><span class="line">	ID       <span class="keyword">int</span></span><br><span class="line">	Content  <span class="keyword">string</span></span><br><span class="line">	Status   <span class="keyword">string</span></span><br><span class="line">	ExecuteAt time.Time</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> db *sql.DB</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">init</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="keyword">var</span> err error</span><br><span class="line">	db, err = sql.Open(<span class="string">"postgres"</span>, <span class="string">"user=youruser dbname=yourdb sslmode=disable"</span>)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		log.Fatal(err)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="comment">// 启动时加载待处理的延时任务</span></span><br><span class="line">	loadPendingTasks()</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 启动 TimerManager</span></span><br><span class="line">	<span class="keyword">go</span> timerManager()</span><br><span class="line"></span><br><span class="line">	<span class="keyword">select</span> &#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">loadPendingTasks</span><span class="params">()</span></span> &#123;</span><br><span class="line">	tasks, err := getPendingTasks()</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		log.Fatal(err)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> _, task := <span class="keyword">range</span> tasks &#123;</span><br><span class="line">		<span class="keyword">go</span> scheduleTask(task)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">getPendingTasks</span><span class="params">()</span> <span class="params">([]Task, error)</span></span> &#123;</span><br><span class="line">	<span class="comment">// 这里利用了 pg 的特性即 update 可以有返回值</span></span><br><span class="line">	<span class="comment">// 用这种 update 的方式可以在一个事务中完成任务状态的更新和任务数据的获取</span></span><br><span class="line">	<span class="comment">// 从而保证操作的原子性，并避免任务在多个结点重复执行。</span></span><br><span class="line">	rows, err := db.Query(<span class="string">`</span></span><br><span class="line"><span class="string">		UPDATE tasks</span></span><br><span class="line"><span class="string">		SET status = 'processing'</span></span><br><span class="line"><span class="string">		WHERE status = 'pending'</span></span><br><span class="line"><span class="string">		RETURNING id, content, status, execute_at</span></span><br><span class="line"><span class="string">	`</span>)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span>, err</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">defer</span> rows.Close()</span><br><span class="line"></span><br><span class="line">	<span class="keyword">var</span> tasks []Task</span><br><span class="line">	<span class="keyword">for</span> rows.Next() &#123;</span><br><span class="line">		<span class="keyword">var</span> task Task</span><br><span class="line">		<span class="keyword">if</span> err := rows.Scan(&amp;task.ID, &amp;task.Content, &amp;task.Status, &amp;task.ExecuteAt); err != <span class="literal">nil</span> &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="literal">nil</span>, err</span><br><span class="line">		&#125;</span><br><span class="line">		tasks = <span class="built_in">append</span>(tasks, task)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> tasks, <span class="literal">nil</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">scheduleTask</span><span class="params">(task Task)</span></span> &#123;</span><br><span class="line">	delay := task.ExecuteAt.Sub(time.Now())</span><br><span class="line">	timer := time.NewTimer(delay)</span><br><span class="line">	&lt;-timer.C</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 执行任务</span></span><br><span class="line">	executeTask(task)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">executeTask</span><span class="params">(task Task)</span></span> &#123;</span><br><span class="line">	<span class="comment">// 执行任务的逻辑</span></span><br><span class="line">	<span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// 更新任务状态为已完成</span></span><br><span class="line">	_, err := db.Exec(<span class="string">"UPDATE tasks SET status = 'completed' WHERE id = $1"</span>, task.ID)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		log.Println(<span class="string">"Failed to update task status:"</span>, err)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">timerManager</span><span class="params">()</span></span> &#123;</span><br><span class="line">	ticker := time.NewTicker(<span class="number">1</span> * time.Minute)</span><br><span class="line">	<span class="keyword">for</span> &#123;</span><br><span class="line">		&lt;-ticker.C</span><br><span class="line"></span><br><span class="line">		<span class="comment">// 每分钟拉取新的待处理任务</span></span><br><span class="line">		tasks, err := getPendingTasks()</span><br><span class="line">		<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">			log.Println(<span class="string">"Failed to get pending tasks:"</span>, err)</span><br><span class="line">			<span class="keyword">continue</span></span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">for</span> _, task := <span class="keyword">range</span> tasks &#123;</span><br><span class="line">			<span class="keyword">go</span> scheduleTask(task)</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h3 id="事务隔离级别"><a href="#事务隔离级别" class="headerlink" title="事务隔离级别"></a>事务隔离级别</h3><p>为了保证数据的一致性和避免并发问题，我选择了“读已提交（Read Committed）”作为我的事务隔离级别。这个隔离级别可以避免脏读问题，同时保持了较好的系统性能。</p>
 <p>如果读者在意可重复读的问题，也可以改用 Repeatable Read 。</p>
+<h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><p>推荐的发版方式是关一个启一个。</p>
+<p>延时任务处理失败的情况下可以自行做错误处理，这个方案内没有考虑。非重要业务打一个日志方便后面查问题就可以了。</p>
+<p>如果拉取任务时发现已经超过预定的执行时间了的话，可以按业务需求加一些类型, 比如需要补的，超出多长时间以内可以补的，不需要补的，等等。</p>
 
       
 
@@ -467,10 +470,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">bash</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">erlang</a>
               </li>
              
@@ -479,11 +478,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">haskell</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">gui</a>
+                <a href="javascript:void(0)" class="js-tag color5">bash</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -491,19 +486,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">aws</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">ec2</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">timezone</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">test</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">haskell</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">gui</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -519,15 +510,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">aws</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">ec2</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">timezone</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">encoding</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">web</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">ddos</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -543,19 +542,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">go</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">postgresql</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">algorithm</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">game</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">ddos</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -568,6 +563,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">design</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">go</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">postgresql</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -591,18 +594,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">distribution</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">concurrency</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">float</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">mix</a>
               </li>
              
@@ -615,11 +606,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">graph</a>
+                <a href="javascript:void(0)" class="js-tag color4">ets</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">ets</a>
+                <a href="javascript:void(0)" class="js-tag color3">distribution</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">concurrency</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">float</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">graph</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -659,10 +662,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">programming</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">firewalld</a>
               </li>
              
@@ -672,6 +671,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">c</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">programming</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -691,15 +694,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">hex</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">hexo</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">os</a>
+                <a href="javascript:void(0)" class="js-tag color4">hex</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -715,15 +714,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">os</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">compiler</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">json</a>
+                <a href="javascript:void(0)" class="js-tag color5">root</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">root</a>
+                <a href="javascript:void(0)" class="js-tag color5">json</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -732,10 +735,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">terminal</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">log</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -752,6 +751,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">emoji</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">log</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -779,6 +782,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">env</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">proxy</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">node</a>
               </li>
              
@@ -795,19 +806,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">env</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">proxy</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">python</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">protocol</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -819,15 +818,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">protocol</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">keyboard</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">ruby</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">rbenv</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">keyboard</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -855,19 +858,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">socket</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">pam</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">charsets</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">ftp</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">socket</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">pam</a>
               </li>
              
               <li class="article-tag-list-item">
