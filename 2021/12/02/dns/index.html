@@ -15,7 +15,7 @@
 <meta property="og:url" content="http://yoursite.com/2021/12/02/dns/index.html">
 <meta property="og:site_name" content="Wind">
 <meta property="og:description" content="什么是 DNS SRV 记录？这么多年竟然没见过">
-<meta property="og:updated_time" content="2023-01-11T02:58:56.382Z">
+<meta property="og:updated_time" content="2023-11-21T03:11:22.075Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="DNS SRV">
 <meta name="twitter:description" content="什么是 DNS SRV 记录？这么多年竟然没见过">
@@ -182,7 +182,7 @@
 
         
         <a href="/2021/12/02/dns/" class="archive-article-date">
-  	<time datetime="2021-12-02T08:18:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-12-02</time>
+  	<time datetime="2021-12-02T07:18:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-12-02</time>
 </a>
         
       </header>
@@ -212,7 +212,7 @@
 <p>启动</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ kubectl apply -f elixir-plug-poc.yaml</span><br><span class="line"></span><br><span class="line">$ kubectl get pods</span><br><span class="line">NAME                READY   STATUS    RESTARTS   AGE</span><br><span class="line">elixir-plug-poc-0   1/1     Running   0          3m28s</span><br><span class="line">elixir-plug-poc-1   1/1     Running   0          3m23s</span><br></pre></td></tr></table></figure>
 <p>进入 container 看一下</p>
-<figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">kubectl -n tutorial exec -it elixir-plug-poc<span class="number">-0</span> <span class="meta-keyword">/bin/</span>bash</span><br><span class="line">bash<span class="number">-5.0</span><span class="meta"># ERLANG_COOKIE=<span class="string">"cookie"</span> bin/elixir_plug_poc remote_console</span></span><br><span class="line">Erlang/OTP <span class="number">22</span> [erts<span class="number">-10.4</span><span class="number">.3</span>] [source] [<span class="number">64</span>-bit] [smp:<span class="number">1</span>:<span class="number">1</span>] [ds:<span class="number">1</span>:<span class="number">1</span>:<span class="number">10</span>] [async-threads:<span class="number">1</span>] [hipe]</span><br><span class="line"></span><br><span class="line">Interactive Elixir (<span class="number">1.9</span><span class="number">.0</span>) - press Ctrl+C to exit (type h() ENTER for help)</span><br><span class="line"></span><br><span class="line"><span class="meta"># 下面发现用的是 libcluster 的 DNSSRV 集群策略, 而且指定了 k8s 的 namespace 是 default</span></span><br><span class="line">iex(elixir_plug_poc@elixir-plug-poc<span class="number">-0.</span>elixir-plug-poc.tutorial.svc.cluster.local)&gt; Application.get_all_env(:libcluster)</span><br><span class="line">[</span><br><span class="line"><span class="symbol">  debug:</span> true,</span><br><span class="line"><span class="symbol">  topologies:</span> [</span><br><span class="line"><span class="symbol">    k8s_example:</span> [</span><br><span class="line"><span class="symbol">      strategy:</span> Cluster.Strategy.Kubernetes.DNSSRV,</span><br><span class="line"><span class="symbol">      config:</span> [</span><br><span class="line"><span class="symbol">        service:</span> <span class="string">"elixir-plug-poc"</span>,</span><br><span class="line"><span class="symbol">        application_name:</span> <span class="string">"elixir_plug_poc"</span>,</span><br><span class="line"><span class="symbol">        namespace:</span> <span class="string">"default"</span>,</span><br><span class="line"><span class="symbol">        polling_interval:</span> <span class="number">10000</span></span><br><span class="line">      ]</span><br><span class="line">    ]</span><br><span class="line">  ]</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">kubectl -n<span class="built_in"> default </span>exec -it elixir-plug-poc-0 /bin/bash</span><br><span class="line">bash-5.0# <span class="attribute">ERLANG_COOKIE</span>=<span class="string">"cookie"</span> bin/elixir_plug_poc remote_console</span><br><span class="line">Erlang/OTP 22 [erts-10.4.3] [source] [64-bit] [smp:1:1] [ds:1:1:10] [async-threads:1] [hipe]</span><br><span class="line"></span><br><span class="line">Interactive Elixir (1.9.0) - press Ctrl+C <span class="keyword">to</span> exit (type h() ENTER <span class="keyword">for</span> help)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 下面发现用的是 libcluster 的 DNSSRV 集群策略, 而且指定了 k8s 的 namespace 是 default</span></span><br><span class="line">iex(elixir_plug_poc@elixir-plug-poc-0.elixir-plug-poc.default.svc.cluster.local)&gt; Application.get_all_env(:libcluster)</span><br><span class="line">[</span><br><span class="line">  debug: <span class="literal">true</span>,</span><br><span class="line">  topologies: [</span><br><span class="line">    k8s_example: [</span><br><span class="line">      strategy: Cluster.Strategy.Kubernetes.DNSSRV,</span><br><span class="line">      config: [</span><br><span class="line">        service: <span class="string">"elixir-plug-poc"</span>,</span><br><span class="line">        application_name: <span class="string">"elixir_plug_poc"</span>,</span><br><span class="line">        namespace: <span class="string">"default"</span>,</span><br><span class="line">        polling_interval: 10000</span><br><span class="line">      ]</span><br><span class="line">    ]</span><br><span class="line">  ]</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
 <p>可以看出这两个结点确实组成了集群</p>
 <figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">iex</span>(elixir_plug_poc<span class="variable">@elixir-plug-poc-0</span>.elixir-plug-poc.default.svc.cluster.local)&gt; <span class="selector-tag">Node</span><span class="selector-class">.list</span></span><br><span class="line"><span class="selector-attr">[:"elixir_plug_poc@elixir-plug-poc-1.elixir-plug-poc.default.svc.cluster.local"]</span></span><br><span class="line"><span class="selector-tag">iex</span>(elixir_plug_poc<span class="variable">@elixir-plug-poc-0</span>.elixir-plug-poc.default.svc.cluster.local)<span class="selector-tag">2</span>&gt;</span><br><span class="line"><span class="selector-tag">User</span> <span class="selector-tag">switch</span> <span class="selector-tag">command</span></span><br><span class="line"> <span class="selector-tag">--</span>&gt; <span class="selector-tag">q</span></span><br></pre></td></tr></table></figure>
 <p>再来看一下 DNS SRV 记录</p>
@@ -451,11 +451,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">websocket</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">chrome</a>
+                <a href="javascript:void(0)" class="js-tag color1">linux</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -471,11 +467,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">linux</a>
+                <a href="javascript:void(0)" class="js-tag color5">websocket</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">cs</a>
+                <a href="javascript:void(0)" class="js-tag color2">chrome</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -487,11 +483,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">bash</a>
+                <a href="javascript:void(0)" class="js-tag color3">cs</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">internet</a>
+                <a href="javascript:void(0)" class="js-tag color5">bash</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -503,39 +499,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">internet</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">test</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">apple</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">iap</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">payment</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">encoding</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">web</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">computer</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">olap</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -551,15 +519,39 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">apple</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">iap</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">payment</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">olap</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">encoding</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">computer</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">web</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">algorithm</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">go</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">redis</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -567,11 +559,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">game</a>
+                <a href="javascript:void(0)" class="js-tag color2">design</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">design</a>
+                <a href="javascript:void(0)" class="js-tag color5">game</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -584,6 +576,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">dns</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">go</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">redis</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">postgresql</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -600,10 +604,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">config</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">postgresql</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -683,15 +683,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">programming</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">c</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">versioncontrol</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -700,6 +692,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">screen</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">versioncontrol</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">programming</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -719,7 +719,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">monitoring</a>
+                <a href="javascript:void(0)" class="js-tag color4">compiler</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -731,10 +731,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">compiler</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">json</a>
               </li>
              
@@ -743,15 +739,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">monitoring</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">locale</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">terminal</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">log</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -771,6 +767,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">log</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">install</a>
               </li>
              
@@ -780,6 +780,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">ssh</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">env</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">proxy</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -795,11 +803,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">env</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">proxy</a>
+                <a href="javascript:void(0)" class="js-tag color5">odbc</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -808,10 +812,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">npm</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">odbc</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -835,10 +835,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">keyboard</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">ruby</a>
               </li>
              
@@ -855,11 +851,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">cdn</a>
+                <a href="javascript:void(0)" class="js-tag color4">keyboard</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">operation</a>
+                <a href="javascript:void(0)" class="js-tag color4">cdn</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -871,15 +867,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">charsets</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">socket</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">pam</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">operation</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">charsets</a>
               </li>
              
               <li class="article-tag-list-item">
