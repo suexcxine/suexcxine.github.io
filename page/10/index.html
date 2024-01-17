@@ -166,6 +166,86 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-erlang_hipe_incompatible" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/06/30/erlang_hipe_incompatible/">erlang HiPE不兼容警告</a>
+    </h1>
+  
+
+        
+        <a href="/2016/06/30/erlang_hipe_incompatible/" class="archive-article-date">
+  	<time datetime="2016-06-30T02:31:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-06-30</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>遇到了这样的警告信息, 意思好像是native code不兼容用不了, fallback成使用byte code了<br><figure class="highlight ebnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">=INFO REPORT==== 29-Jun-2016::20:40:28 ===</span><br><span class="line">&lt;HiPE (v 3.9.3)&gt; Warning: not loading native code for module mod_player: it was compiled for an incompatible runtime system; <span class="attribute">p</span><span class="attribute">l</span><span class="attribute">e</span><span class="attribute">a</span><span class="attribute">s</span><span class="attribute">e</span> <span class="attribute">r</span><span class="attribute">e</span><span class="attribute">g</span><span class="attribute">e</span><span class="attribute">n</span><span class="attribute">e</span><span class="attribute">r</span><span class="attribute">a</span><span class="attribute">t</span><span class="attribute">e</span> <span class="attribute">n</span><span class="attribute">a</span><span class="attribute">t</span><span class="attribute">i</span><span class="attribute">v</span><span class="attribute">e</span> <span class="attribute">c</span><span class="attribute">o</span><span class="attribute">d</span><span class="attribute">e</span> <span class="attribute">f</span><span class="attribute">o</span><span class="attribute">r</span> <span class="attribute">t</span><span class="attribute">h</span><span class="attribute">i</span><span class="attribute">s</span> <span class="attribute">r</span><span class="attribute">u</span><span class="attribute">n</span><span class="attribute">t</span><span class="attribute">i</span><span class="attribute">m</span><span class="attribute">e</span> <span class="attribute">s</span><span class="attribute">y</span><span class="attribute">s</span><span class="attribute">t</span><span class="attribute">e</span><span class="attribute">m</span></span><br></pre></td></tr></table></figure></p>
+<p>lib/kernel/src/hipe_unified_loader.erl<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">case hipe_bifs:check_crc(<span class="keyword">CheckSum</span>) <span class="keyword">of</span>                                          </span><br><span class="line">  <span class="literal">false</span> -&gt;                                                                     </span><br><span class="line">    ?msg(<span class="string">"Warning: not loading native code for module ~w: "</span>                    </span><br><span class="line">     <span class="string">"it was compiled for an incompatible runtime system; "</span>                    </span><br><span class="line">     <span class="string">"please regenerate native code for this runtime system\n"</span>, [<span class="keyword">Mod</span>]),        </span><br><span class="line">    bad_crc;</span><br></pre></td></tr></table></figure></p>
+<p>erts/emulator/hipe/hipe_bif0.c<br><figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">BIF_RETTYPE </span>hipe_bifs_check_crc_1(<span class="keyword">BIF_ALIST_1) </span>                                  </span><br><span class="line">&#123;                                                                                </span><br><span class="line">    Uint crc<span class="comment">;                                                                    </span></span><br><span class="line">                                                                                 </span><br><span class="line">    <span class="meta">if</span> (!term_to_Uint(<span class="keyword">BIF_ARG_1, </span>&amp;crc))                                          </span><br><span class="line">    <span class="keyword">BIF_ERROR(BIF_P, </span><span class="keyword">BADARG); </span>                                                   </span><br><span class="line">    <span class="meta">if</span> (crc == HIPE_ERTS_CHECKSUM)                                               </span><br><span class="line">    <span class="keyword">BIF_RET(am_true); </span>                                                           </span><br><span class="line">    <span class="keyword">BIF_RET(am_false); </span>                                                          </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+<div class="article-tag tagcloud">
+	<i class="icon-price-tags icon"></i>
+	<ul class="article-tag-list">
+		
+		
+		<li class="article-tag-list-item">
+			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">
+				erlang</a>
+		</li>
+		
+		
+	</ul>
+</div>
+
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2016/06/30/erlang_hipe_incompatible/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-nginx_server_location" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -179,7 +259,7 @@
 
         
         <a href="/2016/06/28/nginx_server_location/" class="archive-article-date">
-  	<time datetime="2016-06-28T11:38:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-06-28</time>
+  	<time datetime="2016-06-28T12:38:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-06-28</time>
 </a>
         
       </header>
@@ -266,7 +346,7 @@
 
         
         <a href="/2016/06/28/erlang_socket/" class="archive-article-date">
-  	<time datetime="2016-06-28T07:35:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-06-28</time>
+  	<time datetime="2016-06-28T08:35:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-06-28</time>
 </a>
         
       </header>
@@ -348,7 +428,7 @@
 
         
         <a href="/2016/06/28/erlang_19.0/" class="archive-article-date">
-  	<time datetime="2016-06-28T02:27:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-06-28</time>
+  	<time datetime="2016-06-28T03:27:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-06-28</time>
 </a>
         
       </header>
@@ -428,7 +508,7 @@
 
         
         <a href="/2016/06/21/firewalld_iptables/" class="archive-article-date">
-  	<time datetime="2016-06-21T10:04:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-06-21</time>
+  	<time datetime="2016-06-21T11:04:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-06-21</time>
 </a>
         
       </header>
@@ -522,7 +602,7 @@
 
         
         <a href="/2016/06/17/gogs/" class="archive-article-date">
-  	<time datetime="2016-06-17T06:09:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-06-17</time>
+  	<time datetime="2016-06-17T07:09:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-06-17</time>
 </a>
         
       </header>
@@ -602,7 +682,7 @@
 
         
         <a href="/2016/06/16/pgrep_pkill_cmd/" class="archive-article-date">
-  	<time datetime="2016-06-16T06:19:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-06-16</time>
+  	<time datetime="2016-06-16T07:19:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-06-16</time>
 </a>
         
       </header>
@@ -680,7 +760,7 @@
 
         
         <a href="/2016/06/16/wecenter/" class="archive-article-date">
-  	<time datetime="2016-06-16T03:30:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-06-16</time>
+  	<time datetime="2016-06-16T04:30:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-06-16</time>
 </a>
         
       </header>
@@ -767,7 +847,7 @@
 
         
         <a href="/2016/06/15/top_cmd/" class="archive-article-date">
-  	<time datetime="2016-06-15T08:21:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-06-15</time>
+  	<time datetime="2016-06-15T09:21:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-06-15</time>
 </a>
         
       </header>
@@ -848,7 +928,7 @@
 
         
         <a href="/2016/06/15/wireshark/" class="archive-article-date">
-  	<time datetime="2016-06-15T06:31:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-06-15</time>
+  	<time datetime="2016-06-15T07:31:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-06-15</time>
 </a>
         
       </header>
@@ -921,99 +1001,6 @@
 
 
   
-    <article id="post-script_defer" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/06/14/script_defer/">HTML &lt;script&gt; defer 属性</a>
-    </h1>
-  
-
-        
-        <a href="/2016/06/14/script_defer/" class="archive-article-date">
-  	<time datetime="2016-06-14T10:19:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-06-14</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>自己搭建的博客使用了swiftype之后, 有些css的渲染经常中断, 具体是博文的标签没显示出来<br>查了半天, 貌似是swiftype加载过程会中断页面渲染,<br>找到一个defer属性, 要求必须和src属性配合着用,<br>于是又把swiftype提供的代码移到一个单独的js文件中,<br>使用src属性引用, 即如下这样:<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">defer</span> <span class="attr">src</span>=<span class="string">"/js/swiftype.js"</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
-<p>这么改完之后情况好多了, 基本没再出现标签显示不出来的问题了</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-<div class="article-tag tagcloud">
-	<i class="icon-price-tags icon"></i>
-	<ul class="article-tag-list">
-		
-		
-		<li class="article-tag-list-item">
-			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">
-				web</a>
-		</li>
-		
-		
-		
-		<li class="article-tag-list-item">
-			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">
-				html</a>
-		</li>
-		
-		
-		
-		<li class="article-tag-list-item">
-			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">
-				javascript</a>
-		</li>
-		
-		
-	</ul>
-</div>
-
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2016/06/14/script_defer/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/page/9/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="page-number" href="/page/9/">9</a><span class="page-number current">10</span><a class="page-number" href="/page/11/">11</a><a class="page-number" href="/page/12/">12</a><span class="space">&hellip;</span><a class="page-number" href="/page/28/">28</a><a class="extend next" rel="next" href="/page/11/">Next &raquo;</a>
@@ -1028,7 +1015,7 @@
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2023 Suex Cxine
+    		&copy; 2024 Suex Cxine
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
@@ -1111,10 +1098,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">linux</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">mysql</a>
               </li>
              
@@ -1124,6 +1107,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">cloud</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">linux</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1151,6 +1138,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">internet</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">haskell</a>
               </li>
              
@@ -1159,23 +1150,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">internet</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">test</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">aws</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">ec2</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">timezone</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1191,6 +1166,38 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">aws</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">ec2</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">timezone</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">encoding</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">web</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">rails</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">telegram</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">rfc</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
               </li>
              
@@ -1199,7 +1206,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">encoding</a>
+                <a href="javascript:void(0)" class="js-tag color5">algorithm</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1207,23 +1214,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">web</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">algorithm</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">ddos</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">design</a>
+                <a href="javascript:void(0)" class="js-tag color5">game</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">game</a>
+                <a href="javascript:void(0)" class="js-tag color2">design</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1235,19 +1234,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">dns</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">go</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">redis</a>
+                <a href="javascript:void(0)" class="js-tag color1">postgresql</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">postgresql</a>
+                <a href="javascript:void(0)" class="js-tag color4">dns</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">redis</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1267,14 +1266,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">distribution</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">concurrency</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">mix</a>
               </li>
              
@@ -1284,6 +1275,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">distillery</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">distribution</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">concurrency</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1343,7 +1342,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">programming</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">c</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">versioncontrol</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1352,14 +1359,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">screen</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">versioncontrol</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">programming</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1379,7 +1378,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">compiler</a>
+                <a href="javascript:void(0)" class="js-tag color1">monitoring</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1391,6 +1390,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">compiler</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">json</a>
               </li>
              
@@ -1399,7 +1402,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">monitoring</a>
+                <a href="javascript:void(0)" class="js-tag color4">log</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1427,10 +1430,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">log</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">install</a>
               </li>
              
@@ -1443,14 +1442,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">env</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">proxy</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">nginx</a>
               </li>
              
@@ -1460,6 +1451,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">debug</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">env</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">proxy</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1503,15 +1502,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">keyboard</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">html</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">javascript</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">keyboard</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1535,15 +1534,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">ftp</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">operation</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">charsets</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">ftp</a>
               </li>
              
               <li class="article-tag-list-item">
