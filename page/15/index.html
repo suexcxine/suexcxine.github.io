@@ -166,19 +166,19 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-haskell_zipper" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-haskell_monoid" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2016/01/22/haskell_zipper/">Haskell Zipper</a>
+      <a class="article-title" href="/2016/01/22/haskell_monoid/">Haskell Monoid</a>
     </h1>
   
 
         
-        <a href="/2016/01/22/haskell_zipper/" class="archive-article-date">
+        <a href="/2016/01/22/haskell_monoid/" class="archive-article-date">
   	<time datetime="2016-01-21T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-01-22</time>
 </a>
         
@@ -186,9 +186,9 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>修改数据结构(如树)内部的值,除了遍历之外有没有什么比较好的办法<br>记录下路径?每次都从树根开始的话比较浪费,有没有更好的办法?</p>
+        <p>二元函数的共性, 参数与返回值类型相同, 且存在一个值在操作前后不变如<br><figure class="highlight mathematica"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span> * <span class="keyword">N</span> = <span class="keyword">N</span>, <span class="keyword">N</span> * <span class="number">1</span> = <span class="keyword">N</span></span><br><span class="line">[] ++ <span class="keyword">List</span> = <span class="keyword">List</span>, <span class="keyword">List</span> ++ [] = <span class="keyword">List</span></span><br></pre></td></tr></table></figure></p>
         
-          <a class="article-more-a" href="/2016/01/22/haskell_zipper/#more">more >></a>
+          <a class="article-more-a" href="/2016/01/22/haskell_monoid/#more">more >></a>
         
       
 
@@ -216,7 +216,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2016/01/22/haskell_zipper/">展开全文 >></a>
+          <a class="article-more-a" href="/2016/01/22/haskell_monoid/">展开全文 >></a>
         </p>
       
 
@@ -1095,18 +1095,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">db</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">cloud</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">linux</a>
               </li>
              
@@ -1119,19 +1107,31 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">cs</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">db</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">cloud</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">bash</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">erlang</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">elixir</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">cs</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">bash</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1179,6 +1179,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">olap</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">web</a>
               </li>
              
@@ -1195,19 +1203,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">clickhouse</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">olap</a>
+                <a href="javascript:void(0)" class="js-tag color4">computer</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">algorithm</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">computer</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1216,10 +1216,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">game</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">design</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1243,6 +1239,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">design</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">redis</a>
               </li>
              
@@ -1251,11 +1251,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">network</a>
+                <a href="javascript:void(0)" class="js-tag color5">exception</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">exception</a>
+                <a href="javascript:void(0)" class="js-tag color3">network</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1399,15 +1399,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">log</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">locale</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">terminal</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">log</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1479,15 +1479,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">plug</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">cowboy</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">protocol</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">keyboard</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1499,7 +1495,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">keyboard</a>
+                <a href="javascript:void(0)" class="js-tag color5">plug</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">cowboy</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1512,6 +1512,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">cdn</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">operation</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1532,10 +1536,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">ftp</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">operation</a>
               </li>
              
               <li class="article-tag-list-item">
