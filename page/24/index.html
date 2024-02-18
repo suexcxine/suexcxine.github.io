@@ -980,19 +980,19 @@
 
 
   
-    <article id="post-erlang_io" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-erlang_functions" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2015/09/06/erlang_io/">erlang的io库</a>
+      <a class="article-title" href="/2015/09/06/erlang_functions/">erlang useful functions</a>
     </h1>
   
 
         
-        <a href="/2015/09/06/erlang_io/" class="archive-article-date">
+        <a href="/2015/09/06/erlang_functions/" class="archive-article-date">
   	<time datetime="2015-09-05T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2015-09-06</time>
 </a>
         
@@ -1000,7 +1000,22 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>file:eval<br>可以将一个文件里的erlang代码执行,但是不返回值,所有只能利用这些代码的副作用.</p>
+        <h2 id="erlang-integer-to-list"><a href="#erlang-integer-to-list" class="headerlink" title="erlang:integer_to_list"></a>erlang:integer_to_list</h2><h2 id="erlang-list-to-integer"><a href="#erlang-list-to-integer" class="headerlink" title="erlang:list_to_integer"></a>erlang:list_to_integer</h2><p>字符串与整型的相互转换,可以指定进制</p>
+<h2 id="erlang-function-exported"><a href="#erlang-function-exported" class="headerlink" title="erlang:function_exported"></a>erlang:function_exported</h2><p>判断指定的函数是否已导出,要求模块已加载,另外,BIF一律返回false</p>
+<h4 id="另有一种做法"><a href="#另有一种做法" class="headerlink" title="另有一种做法"></a>另有一种做法</h4><figure class="highlight erlang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="title">is_exported</span><span class="params">(&#123;M, F, A&#125;)</span> -&gt;</span></span><br><span class="line">    lists:member(&#123;F, A&#125;, M:module_info(exports)).</span><br></pre></td></tr></table></figure>
+<p>区别是</p>
+<ul>
+<li>这种做法会自动加载模块(调用module_info的时候),而erlang:function_exported不会</li>
+<li>BIF也会返回true</li>
+<li>性能(我机器上平均一次26.1微秒)比erlang:function_exported(0.86微秒)差30倍左右, 能不能大量用呢?</li>
+</ul>
+<h2 id="binary-replace"><a href="#binary-replace" class="headerlink" title="binary:replace"></a>binary:replace</h2><h2 id="binary-split"><a href="#binary-split" class="headerlink" title="binary:split"></a>binary:split</h2><p>可以使用正则表达式,还是很有用的</p>
+<h2 id="erlang-decode-packet"><a href="#erlang-decode-packet" class="headerlink" title="erlang:decode_packet"></a>erlang:decode_packet</h2><p>要记得用呀, 很好用</p>
+<h2 id="net-kernel-longnames"><a href="#net-kernel-longnames" class="headerlink" title="net_kernel:longnames"></a>net_kernel:longnames</h2><p>判断当前是不是longname </p>
+<h2 id="net-kernel-monitor-nodes"><a href="#net-kernel-monitor-nodes" class="headerlink" title="net_kernel:monitor_nodes"></a>net_kernel:monitor_nodes</h2><h2 id="erlang-monitor-node的区别"><a href="#erlang-monitor-node的区别" class="headerlink" title="erlang:monitor_node的区别"></a>erlang:monitor_node的区别</h2><p>net_kernel:monitor_nodes是全监听,erlang:monitor_node只监听一个结点<br>net_kernel:monitor_nodes不会尝试连接,erlang:monitor_node会尝试连接<br>net_kernel:monitor_nodes有nodeup和nodedown消息,erlang:monitor_node只有nodedown消息<br>erlang:monitor_node在对应的结点down掉之后即失效,还想监听需要重新调用erlang:monitor_node</p>
+<h2 id="erl-scan-tokens"><a href="#erl-scan-tokens" class="headerlink" title="erl_scan:tokens"></a>erl_scan:tokens</h2><h2 id="erl-scan-string"><a href="#erl-scan-string" class="headerlink" title="erl_scan:string"></a>erl_scan:string</h2><h2 id="erl-parse-parse-exprs"><a href="#erl-parse-parse-exprs" class="headerlink" title="erl_parse:parse_exprs"></a>erl_parse:parse_exprs</h2><h2 id="erl-parse-parse-form"><a href="#erl-parse-parse-form" class="headerlink" title="erl_parse:parse_form"></a>erl_parse:parse_form</h2><h2 id="compile-forms"><a href="#compile-forms" class="headerlink" title="compile:forms"></a>compile:forms</h2><h2 id="code-load-binary"><a href="#code-load-binary" class="headerlink" title="code:load_binary"></a>code:load_binary</h2><h2 id="erl-syntax"><a href="#erl-syntax" class="headerlink" title="erl_syntax"></a>erl_syntax</h2><h2 id="erl-eval"><a href="#erl-eval" class="headerlink" title="erl_eval"></a>erl_eval</h2><p>编译相关的一些api</p>
+<h2 id="c-i"><a href="#c-i" class="headerlink" title="c:i"></a>c:i</h2><p>shell的i(x,y,z)接口，可以方便替代process_info()</p>
+<h2 id="application-get-application"><a href="#application-get-application" class="headerlink" title="application:get_application"></a>application:get_application</h2><p>可以传入pid或module取所属的application</p>
 
       
 
@@ -1028,7 +1043,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2015/09/06/erlang_io/">展开全文 >></a>
+          <a class="article-more-a" href="/2015/09/06/erlang_functions/">展开全文 >></a>
         </p>
       
 
@@ -1159,15 +1174,27 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">cs</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">websocket</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">chrome</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">erlang</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">elixir</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">cs</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">bash</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1183,18 +1210,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">bash</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">erlang</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">elixir</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">internet</a>
               </li>
              
@@ -1207,7 +1222,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">encoding</a>
+                <a href="javascript:void(0)" class="js-tag color5">test</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">apple</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">iap</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">payment</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1227,7 +1254,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">test</a>
+                <a href="javascript:void(0)" class="js-tag color4">encoding</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1236,22 +1263,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">olap</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">apple</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">iap</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">payment</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">computer</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1279,27 +1290,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">computer</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">go</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">redis</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">postgresql</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">dns</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">docker</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">network</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1312,6 +1311,22 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">rfc</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">dns</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">redis</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">docker</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">network</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1335,19 +1350,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">ets</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">float</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">distribution</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">concurrency</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">ets</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">float</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1375,6 +1390,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">firewalld</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">iptables</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">push</a>
               </li>
              
@@ -1391,14 +1414,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">firewalld</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">iptables</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">programming</a>
               </li>
              
@@ -1411,15 +1426,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">http</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">gnu</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">screen</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">http</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1447,15 +1462,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">compiler</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">java</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">jinterface</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">compiler</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1507,14 +1522,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">env</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">proxy</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">nginx</a>
               </li>
              
@@ -1527,7 +1534,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">env</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">proxy</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">odbc</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">windows</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1539,19 +1558,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">windows</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">python</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">plug</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">cowboy</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1564,6 +1571,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">postgres</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">plug</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">cowboy</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1603,10 +1618,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">wifi</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">socket</a>
               </li>
              
@@ -1619,11 +1630,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">sns</a>
+                <a href="javascript:void(0)" class="js-tag color5">wifi</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">ftp</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">sns</a>
               </li>
              
               <li class="article-tag-list-item">
