@@ -166,6 +166,166 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-erlang_unicode" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/09/08/erlang_unicode/">erlang unicode</a>
+    </h1>
+  
+
+        
+        <a href="/2015/09/08/erlang_unicode/" class="archive-article-date">
+  	<time datetime="2015-09-07T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2015-09-08</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="LANG-amp-LC-CTYPE环境变量和encoding"><a href="#LANG-amp-LC-CTYPE环境变量和encoding" class="headerlink" title="LANG &amp; LC_CTYPE环境变量和encoding"></a>LANG &amp; LC_CTYPE环境变量和encoding</h2><p>影响Erlang Shell,告诉终端程序是否要处理unicode</p>
+<blockquote>
+<p>\$ echo $LC_CTYPE</p>
+<p>\$ echo $LANG<br>zh_CN.UTF-8</p>
+</blockquote>
+<p>如,下例中encoding是unicode:</p>
+<blockquote>
+<p>Erlang R15B (erts-5.9) [source] [smp:4:4] [async-threads:0] [hipe] [kernel-poll:false]</p>
+<p>Eshell V5.9  (abort with ^G)<br>1&gt; io:getopts().<br>[{expand_fun,#Fun<group.0.33302583>},<br> {echo,true},<br> {binary,false},<br> {encoding,unicode}]</group.0.33302583></p>
+</blockquote>
+<p>改成latin1看看,显示都成乱码了:</p>
+<blockquote>
+<p>LC_CTYPE=en_US.ISO-8859-1 /usr/local/bin/erl<br>Erlang R15B (erts-5.9) [source] [smp:4:4] [async-threads:0] [hipe] [kernel-poll:false]</p>
+<p>Eshell V5.9  (abort with ^G)<br>1&gt; io:getopts().<br>[{expand_fun,#Fun<group.0.33302583>},<br> {echo,true},<br> {binary,false},<br> {encoding,latin1}]<br>2&gt; &quot;\346\210\221\344\273\254&quot;.<br>[230,136,145,228,187,172]<br>3&gt; io:format(&quot;~ts&quot;,[lists:seq(20204,20220)]).<br>\x{4EEC}\x{4EED}\x{4EEE}\x{4EEF}\x{4EF0}\x{4EF1}\x{4EF2}\x{4EF3}\x{4EF4}\x{4EF5}\x{4EF6}\x{4EF7}\x{4EF8}\x{4EF9}\x{4EFA}\x{4EFB}\x{4EFC}ok<br>4&gt; io:setopts([{encoding,unicode}]).<br>ok<br>5&gt; &quot;我们&quot;.<br>[25105,20204]</group.0.33302583></p>
+</blockquote>
+<p>输入&quot;我们&quot;变成了&quot;\346\210\221\344\273\254&quot;</p>
+<h2 id="erl的参数-pc"><a href="#erl的参数-pc" class="headerlink" title="erl的参数: +pc"></a>erl的参数: +pc</h2><p>选择Shell可打印字符的范围,可以是erl +pc latin1 或者  erl +pc unicode, 默认情况下,erl启动参数是latin1<br>io:printable_range/0返回可打印的字符集<br>io_lib:printable_list/1判断一个List是否可打印</p>
+<blockquote>
+<p>$ erl<br>Erlang/OTP 17 [erts-6.2] [source] [smp:4:4] [async-threads:10] [hipe] [kernel-poll:false]</p>
+<p>Eshell V6.2  (abort with ^G)<br>1&gt; io:printable_range().<br>latin1<br>2&gt; io_lib:printable_list([25105]).<br>false<br>3&gt; unicode:characters_to_binary(&quot;我&quot;).<br>&lt;<230,136,145>&gt;<br>4&gt; file:write_file(&quot;test&quot;, [unicode:characters_to_binary(&quot;我&quot;)]).<br>ok<br>5&gt; file:read_file(&quot;test&quot;).<br>{ok,&lt;<230,136,145>&gt;}<br>6&gt; file:write_file(&quot;test&quot;, [io_lib:format(&quot;~w.~n&quot;, [unicode:characters_to_binary(&quot;我&quot;)])]).<br>ok<br>7&gt; file:consult(&quot;test&quot;).<br>{ok,[&lt;<230,136,145>&gt;]}</230,136,145></230,136,145></230,136,145></p>
+<p>17.0 +pc unicode情况下,unicode字符串可以正常显示如下<br>$ erl +pc unicode<br>Erlang/OTP 17 [erts-6.2] [source] [smp:4:4] [async-threads:10] [hipe] [kernel-poll:false]</p>
+<p>Eshell V6.2  (abort with ^G)<br>1&gt; io:printable_range().<br>unicode<br>2&gt; io_lib:printable_list([25105]).<br>true<br>3&gt; &lt;<230,136,145,228,187,172,229,173,166,228,185,160,69,114,108,97,110,103>&gt;.<br>&lt;&lt;&quot;我们学习Erlang&quot;/utf8&gt;&gt;<br>4&gt; unicode:characters_to_binary(&quot;我&quot;).<br>&lt;&lt;&quot;我&quot;/utf8&gt;&gt;<br>5&gt; file:write_file(&quot;test&quot;, [unicode:characters_to_binary(&quot;我&quot;)]).<br>ok<br>6&gt; file:read_file(&quot;test&quot;).<br>{ok,&lt;&lt;&quot;我&quot;/utf8&gt;&gt;}<br>7&gt; file:write_file(&quot;test&quot;, [io_lib:format(&quot;~w.~n&quot;, [unicode:characters_to_binary(&quot;我&quot;)])]).<br>ok<br>8&gt; file:consult(&quot;test&quot;).<br>{ok,[&lt;&lt;&quot;我&quot;/utf8&gt;&gt;]}</230,136,145,228,187,172,229,173,166,228,185,160,69,114,108,97,110,103></p>
+</blockquote>
+<h2 id="epp-default-encoding-0"><a href="#epp-default-encoding-0" class="headerlink" title="epp:default_encoding/0"></a>epp:default_encoding/0</h2><p>返回的是当前OTP版本使用的默认编码方式.R16B是latin1, 17.0是utf8.</p>
+<blockquote>
+<p>$ erl<br>Erlang/OTP 17 [erts-6.2] [source] [smp:4:4] [async-threads:10] [hipe] [kernel-poll:false]</p>
+<p>Eshell V6.2  (abort with ^G)<br>1&gt; epp:default_encoding().<br>utf8</p>
+</blockquote>
+<p>文件注释头可以指定编译器使用某种编码来解析,如<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">%</span><span class="bash">% -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="meta">%</span><span class="bash">% -*- coding: latin-1 -*-</span></span><br></pre></td></tr></table></figure></p>
+<p>例如:<br><figure class="highlight erlang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">%% -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="keyword">-module</span><span class="params">(test)</span>.</span><br><span class="line"><span class="keyword">-export</span><span class="params">([test/<span class="number">0</span>])</span>.</span><br><span class="line"><span class="function"><span class="title">test</span><span class="params">()</span> -&gt;</span></span><br><span class="line">        [<span class="string">"我"</span>, &lt;&lt;<span class="string">"我"</span>/utf8&gt;&gt;].</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>$ erl<br>Erlang/OTP 17 [erts-6.2] [source] [smp:4:4] [async-threads:10] [hipe] [kernel-poll:false]</p>
+<p>Eshell V6.2  (abort with ^G)<br>1&gt; test:test().<br>[[25105],&lt;<230,136,145>&gt;]</230,136,145></p>
+</blockquote>
+<h2 id="文件编码带来的差异"><a href="#文件编码带来的差异" class="headerlink" title="文件编码带来的差异"></a>文件编码带来的差异</h2><p>R15B, erlang一律以latin-1编译代码,遇到中文都编译成这种,<br>如test模块的函数:<br><figure class="highlight erlang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="title">data</span><span class="params">()</span> -&gt;</span> <span class="string">"中国人"</span>.</span><br><span class="line"><span class="function"><span class="title">data2</span><span class="params">()</span> -&gt;</span> &lt;&lt;<span class="string">"中国人"</span>&gt;&gt;.</span><br></pre></td></tr></table></figure></p>
+<p>运行时:</p>
+<blockquote>
+<p>1&gt; test:data().<br>[228,184,173,229,155,189,228,186,186]<br>2&gt; test:data2().<br>&lt;<228,184,173,229,155,189,228,186,186>&gt;</228,184,173,229,155,189,228,186,186></p>
+</blockquote>
+<p>而erlang 17中,erlang一律默认以unicode编译代码(也可以在文件头指定),遇到中文都编译成这种,<br>如test模块的函数:<br><figure class="highlight erlang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="title">data</span><span class="params">()</span> -&gt;</span> <span class="string">"中国人"</span>.</span><br><span class="line"><span class="function"><span class="title">data2</span><span class="params">()</span> -&gt;</span> &lt;&lt;<span class="string">"中国人"</span>/utf8&gt;&gt;.  (注意这里需要加utf8类型)</span><br></pre></td></tr></table></figure></p>
+<p>运行时:</p>
+<blockquote>
+<p>1&gt; test:data().<br>[20013,22269,20154]<br>2&gt; test:data2().<br>&lt;<228,184,173,229,155,189,228,186,186>&gt;</228,184,173,229,155,189,228,186,186></p>
+</blockquote>
+<p>而这里如果data2()没加utf8类型说明,即写成了这样<br><figure class="highlight erlang"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="title">data2</span><span class="params">()</span> -&gt;</span> &lt;&lt;<span class="string">"中国人"</span>&gt;&gt;.</span><br></pre></td></tr></table></figure></p>
+<p>则会有问题:</p>
+<blockquote>
+<p>1&gt; test:data2().<br>&lt;&lt;&quot;-ýº&quot;&gt;&gt;<br>2&gt; io:format(&quot;~w&quot;, [test:data2()]).<br>&lt;<45,253,186>&gt;ok</45,253,186></p>
+</blockquote>
+<p>或者写成了这样<br><figure class="highlight erlang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">%% -*- coding: latin-1 -*-</span></span><br><span class="line"><span class="function"><span class="title">data2</span><span class="params">()</span> -&gt;</span> &lt;&lt;<span class="string">"中国人"</span>/utf8&gt;&gt;.</span><br></pre></td></tr></table></figure></p>
+<p>即utf8类型说明与latin-1文件编码说明冲突,则也会有问题:</p>
+<blockquote>
+<p>1&gt; test:data2().<br>&lt;<195,164,194,184,194,173,195,165,194,155,194,189,195,164, 194,186,194,186="">&gt;<br>2&gt; io:format(&quot;~ts&quot;, [v(2)]).<br>ä¸­å½äººok<br>3&gt; io:format(&quot;~s&quot;, [v(2)]).<br>Ã¤Â¸Â­Ã¥ÂÂ½Ã¤ÂºÂºok</195,164,194,184,194,173,195,165,194,155,194,189,195,164,></p>
+</blockquote>
+<p>所以以下这段问题代码<br><figure class="highlight erlang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">-module</span><span class="params">(t)</span>.</span><br><span class="line"><span class="keyword">-export</span><span class="params">([test/<span class="number">0</span>])</span>.</span><br><span class="line"><span class="function"><span class="title">test</span><span class="params">()</span> -&gt;</span></span><br><span class="line">    [<span class="string">"我"</span>, &lt;&lt;<span class="string">"我"</span>&gt;&gt;].</span><br></pre></td></tr></table></figure></p>
+<p>R17编译后的运行结果为：</p>
+<blockquote>
+<p>1&gt; t:test().<br>[[25105],&lt;<17>&gt;]</17></p>
+</blockquote>
+<p>字符串是字符串,binary是binary,<br>字符串是这样的[25105, 25105, 97]<br>binary是这样的, &lt;<230,136,145,230,136,145,97>&gt;, 二进制这里面一个数字肯定是1个字节的, 要不不叫binary了</230,136,145,230,136,145,97></p>
+<p>&lt;&lt;&quot;我&quot;&gt;&gt;相当于&lt;<25105>&gt;,而二进制一个数字需要是1个字节,所以截断变成&lt;<17>&gt;<br>而加上utf8描述符后就不会被截断</17></25105></p>
+<blockquote>
+<p>&lt;&lt;&quot;我&quot;/utf8&gt;&gt;.<br>&lt;<230,136,145>&gt;</230,136,145></p>
+</blockquote>
+<p>所以这里把代码改为<br><figure class="highlight erlang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">-module</span><span class="params">(t)</span>.</span><br><span class="line"><span class="keyword">-export</span><span class="params">([test/<span class="number">0</span>])</span>.</span><br><span class="line"><span class="function"><span class="title">test</span><span class="params">()</span> -&gt;</span></span><br><span class="line">    [<span class="string">"我"</span>, &lt;&lt;<span class="string">"我"</span>/utf8&gt;&gt;].</span><br></pre></td></tr></table></figure></p>
+<p>即可</p>
+<h2 id="文件名解析"><a href="#文件名解析" class="headerlink" title="文件名解析"></a>文件名解析</h2><p>erl启动的时候添加不同的flag可以控制解析文件名的方式: </p>
+<ul>
+<li>+fnl 按照latin去解析文件名 </li>
+<li>+fnu 按照unicode解析文件名 </li>
+<li>+fna 是根据环境变量(LC_CTYPE)自动选择,这也是目前的系统默认值.</li>
+</ul>
+<p>可以使用file:native_name_encoding检查此参数.</p>
+<blockquote>
+<p>$ erl<br>Erlang/OTP 17 [erts-6.2] [source] [smp:4:4] [async-threads:10] [hipe] [kernel-poll:false]</p>
+<p>Eshell V6.2  (abort with ^G)<br>1&gt; file:native_name_encoding().<br>utf8<br>2&gt; file:read_file(&quot;test我.erl&quot;).<br>{ok,&lt;<45,109,111,100,117,108,101,40,39,116,101,115,116,230,136,145,39,41,46,32,10,45,101,120,112,111,114,...>&gt;}</45,109,111,100,117,108,101,40,39,116,101,115,116,230,136,145,39,41,46,32,10,45,101,120,112,111,114,...></p>
+</blockquote>
+<p>+fnl后</p>
+<blockquote>
+<p>$ erl +fnl<br>Erlang/OTP 17 [erts-6.2] [source] [smp:4:4] [async-threads:10] [hipe] [kernel-poll:false]</p>
+<p>Eshell V6.2  (abort with ^G)<br>1&gt; file:native_name_encoding().<br>latin1<br>2&gt; file:read_file(&quot;test我.erl&quot;).<br>{error,badarg}</p>
+</blockquote>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><p><a href="http://www.youtube.com/watch?v=M6hPLCA0F-Y" target="_blank" rel="noopener">Erlang User Conference 2013上patrik分享的BRING UNICODE TO ERLANG!视频</a><br><a href="http://www.erlang-factory.com/upload/presentations/847/PatrikEUC2013.pdf" target="_blank" rel="noopener">PDF在这里</a><br><a href="http://www.erlang.org/doc/apps/stdlib/unicode_usage.html" target="_blank" rel="noopener">官方文档</a></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+<div class="article-tag tagcloud">
+	<i class="icon-price-tags icon"></i>
+	<ul class="article-tag-list">
+		
+		
+		<li class="article-tag-list-item">
+			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">
+				erlang</a>
+		</li>
+		
+		
+	</ul>
+</div>
+
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2015/09/08/erlang_unicode/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-nautilus" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -993,95 +1153,6 @@
 
 
   
-    <article id="post-TLCL_notes_29" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/09/07/TLCL_notes_29/">&lt;&lt;The Linux Command Line&gt;&gt; 第二九章笔记 读取键盘输入</a>
-    </h1>
-  
-
-        
-        <a href="/2015/09/07/TLCL_notes_29/" class="archive-article-date">
-  	<time datetime="2015-09-07T12:00:29.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2015-09-07</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="read-从标准输入读取数值"><a href="#read-从标准输入读取数值" class="headerlink" title="read - 从标准输入读取数值"></a>read - 从标准输入读取数值</h2><p>read [-options] [variable...]<br>这里的 options 是下面列出的可用选项中的一个或多个，且 variable 是用来存储输入数值的一个或多个变量名。<br>如果没有提供变量名，shell 变量 REPLY 会包含数据行。</p>
-<p>注意: 你<strong>不能管道read</strong>, 管道线 会创建子 shell,<br>在类 Unix 的系统中，子 shell 执行的时候，会为进程创建父环境的副本。当进程结束 之后，环境副本就会被破坏掉。<br>这意味着一个子 shell 永远不能改变父进程的环境。</p>
-<h2 id="IFS"><a href="#IFS" class="headerlink" title="IFS"></a>IFS</h2><p>通常，shell 对提供给 read 的输入按照单词进行分离。<br>正如我们所见到的，这意味着多个由一个或几个空格 分离开的单词在输入行中变成独立的个体，并被 read 赋值给单独的变量。<br>这种行为由 shell 变量<code>__IFS__</code>（内部字符分隔符）配置。IFS 的默认值包含一个空格，一个 tab，和一个换行符，每一个都会把 字段分割开。</p>
-<p>Shell 允许在一个命令之前立即发生一个或多个变量赋值。这些赋值为跟随着的命令更改环境变量。<br>这个赋值的影响是暂时的；只是在命令存在期间改变环境变量。</p>
-<h2 id="lt-lt-lt-操作符指示一个-here-字符串"><a href="#lt-lt-lt-操作符指示一个-here-字符串" class="headerlink" title="&lt;&lt;&lt; 操作符指示一个 here 字符串"></a>&lt;&lt;&lt; 操作符指示一个 here 字符串</h2><p>一个 here 字符串就像一个 here 文档，只是比较简短，由 单个字符串组成。</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-<div class="article-tag tagcloud">
-	<i class="icon-price-tags icon"></i>
-	<ul class="article-tag-list">
-		
-		
-		<li class="article-tag-list-item">
-			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">
-				linux</a>
-		</li>
-		
-		
-		
-		<li class="article-tag-list-item">
-			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">
-				bash</a>
-		</li>
-		
-		
-	</ul>
-</div>
-
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2015/09/07/TLCL_notes_29/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/page/20/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/19/">19</a><a class="page-number" href="/page/20/">20</a><span class="page-number current">21</span><a class="page-number" href="/page/22/">22</a><a class="page-number" href="/page/23/">23</a><span class="space">&hellip;</span><a class="page-number" href="/page/29/">29</a><a class="extend next" rel="next" href="/page/22/">Next &raquo;</a>
@@ -1183,6 +1254,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">websocket</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">chrome</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">mysql</a>
               </li>
              
@@ -1192,14 +1271,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">cloud</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">websocket</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">chrome</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1275,15 +1346,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">css</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">computer</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">algorithm</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1291,27 +1354,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">game</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">devops</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">centos</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">go</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">postgresql</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">design</a>
+                <a href="javascript:void(0)" class="js-tag color5">algorithm</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1327,7 +1370,39 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">game</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">css</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">devops</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">centos</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">design</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">go</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">postgresql</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">dns</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">redis</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1339,15 +1414,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">redis</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">exception</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">config</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">distribution</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">concurrency</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1363,19 +1442,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">ets</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">float</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">distribution</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">concurrency</a>
+                <a href="javascript:void(0)" class="js-tag color4">ets</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1419,14 +1490,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">firewalld</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">iptables</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">programming</a>
               </li>
              
@@ -1435,7 +1498,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">versioncontrol</a>
+                <a href="javascript:void(0)" class="js-tag color5">firewalld</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">iptables</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1451,15 +1518,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">versioncontrol</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">hex</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">os</a>
+                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
+                <a href="javascript:void(0)" class="js-tag color3">os</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1475,15 +1546,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">json</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">compiler</a>
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">json</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">root</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">js</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">cookie</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1515,14 +1594,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">js</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">cookie</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">install</a>
               </li>
              
@@ -1547,19 +1618,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">node</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">npm</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">env</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">proxy</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">node</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">npm</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1571,11 +1642,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">plug</a>
+                <a href="javascript:void(0)" class="js-tag color4">postgres</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">cowboy</a>
+                <a href="javascript:void(0)" class="js-tag color3">pg</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1587,11 +1658,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">pg</a>
+                <a href="javascript:void(0)" class="js-tag color5">plug</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">postgres</a>
+                <a href="javascript:void(0)" class="js-tag color2">cowboy</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1619,6 +1690,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">cdn</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">operation</a>
               </li>
              
@@ -1627,11 +1702,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">cdn</a>
+                <a href="javascript:void(0)" class="js-tag color2">ubuntu</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">ubuntu</a>
+                <a href="javascript:void(0)" class="js-tag color4">charsets</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1647,19 +1722,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">charsets</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">ftp</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">xcode</a>
+                <a href="javascript:void(0)" class="js-tag color4">sns</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">sns</a>
+                <a href="javascript:void(0)" class="js-tag color1">xcode</a>
               </li>
             
             <div class="clearfix"></div>
